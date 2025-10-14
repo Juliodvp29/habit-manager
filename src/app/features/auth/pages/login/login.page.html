@@ -1,0 +1,57 @@
+<ion-content class="ion-padding">
+  <div class="flex flex-col items-center justify-center min-h-full px-4">
+    <!-- Logo o título -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-primary-600 mb-2">Habit Manager</h1>
+      <p class="text-gray-600">Inicia sesión en tu cuenta</p>
+    </div>
+
+    <!-- Formulario -->
+    <div class="w-full max-w-md">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+        <!-- Email -->
+        <ion-item class="mb-4 rounded-lg">
+          <ion-icon name="mail-outline" slot="start" class="text-primary-500"></ion-icon>
+          <ion-input formControlName="email" type="email" label="Correo electrónico" labelPlacement="floating"
+            placeholder="tu@email.com" [clearInput]="true"></ion-input>
+        </ion-item>
+
+        <!-- Password -->
+        <ion-item class="mb-6 rounded-lg">
+          <ion-icon name="lock-closed-outline" slot="start" class="text-primary-500"></ion-icon>
+          <ion-input formControlName="password" [type]="showPassword() ? 'text' : 'password'" label="Contraseña"
+            labelPlacement="floating" placeholder="••••••••"></ion-input>
+          <ion-icon [name]="showPassword() ? 'eye-outline' : 'eye-off-outline'" slot="end" (click)="togglePassword()"
+            class="cursor-pointer text-gray-400"></ion-icon>
+        </ion-item>
+
+        <!-- Forgot Password -->
+        <div class="text-right mb-6">
+          <a routerLink="/auth/forgot-password" class="text-sm text-primary-600">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+
+        <!-- Submit Button -->
+        <ion-button type="submit" expand="block" [disabled]="loginForm.invalid || isLoading()" class="mb-4">
+          @if (isLoading()) {
+          Iniciando sesión...
+          } @else {
+          Iniciar sesión
+          }
+        </ion-button>
+
+        <!-- Register Link -->
+        <div class="text-center">
+          <p class="text-sm text-gray-600">
+            ¿No tienes cuenta?
+            <a routerLink="/auth/register" class="text-primary-600 font-semibold">
+              Regístrate aquí
+            </a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>

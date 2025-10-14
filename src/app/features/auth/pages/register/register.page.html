@@ -1,0 +1,83 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/auth/login"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="flex flex-col items-center justify-center min-h-full px-4">
+    <!-- Título -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-primary-600 mb-2">Crear cuenta</h1>
+      <p class="text-gray-600">Completa tus datos para comenzar</p>
+    </div>
+
+    <!-- Formulario -->
+    <div class="w-full max-w-md">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+        <!-- Full Name -->
+        <ion-item class="mb-4 rounded-lg">
+          <ion-icon name="person-outline" slot="start" class="text-primary-500"></ion-icon>
+          <ion-input formControlName="fullName" type="text" label="Nombre completo" labelPlacement="floating"
+            placeholder="Juan Pérez" [clearInput]="true"></ion-input>
+        </ion-item>
+
+        <!-- Email -->
+        <ion-item class="mb-4 rounded-lg">
+          <ion-icon name="mail-outline" slot="start" class="text-primary-500"></ion-icon>
+          <ion-input formControlName="email" type="email" label="Correo electrónico" labelPlacement="floating"
+            placeholder="tu@email.com" [clearInput]="true"></ion-input>
+        </ion-item>
+
+        <!-- Password -->
+        <ion-item class="mb-4 rounded-lg">
+          <ion-icon name="lock-closed-outline" slot="start" class="text-primary-500"></ion-icon>
+          <ion-input formControlName="password" [type]="showPassword() ? 'text' : 'password'" label="Contraseña"
+            labelPlacement="floating" placeholder="••••••••"></ion-input>
+          <ion-icon [name]="showPassword() ? 'eye-outline' : 'eye-off-outline'" slot="end" (click)="togglePassword()"
+            class="cursor-pointer text-gray-400"></ion-icon>
+        </ion-item>
+
+        <!-- Confirm Password -->
+        <ion-item class="mb-4 rounded-lg">
+          <ion-icon name="lock-closed-outline" slot="start" class="text-primary-500"></ion-icon>
+          <ion-input formControlName="confirmPassword" [type]="showConfirmPassword() ? 'text' : 'password'"
+            label="Confirmar contraseña" labelPlacement="floating" placeholder="••••••••"></ion-input>
+          <ion-icon [name]="showConfirmPassword() ? 'eye-outline' : 'eye-off-outline'" slot="end"
+            (click)="toggleConfirmPassword()" class="cursor-pointer text-gray-400"></ion-icon>
+        </ion-item>
+
+        <!-- Error Message -->
+        @if (registerForm.get('confirmPassword')?.hasError('passwordMismatch') &&
+        registerForm.get('confirmPassword')?.touched) {
+        <div class="text-red-500 text-sm mb-4 px-2">
+          Las contraseñas no coinciden
+        </div>
+        }
+
+        <!-- Submit Button -->
+        <ion-button type="submit" expand="block" [disabled]="registerForm.invalid || isLoading()" class="mb-4">
+          @if (isLoading()) {
+          Registrando...
+          } @else {
+          Crear cuenta
+          }
+        </ion-button>
+
+        <!-- Login Link -->
+        <div class="text-center">
+          <p class="text-sm text-gray-600">
+            ¿Ya tienes cuenta?
+            <a routerLink="/auth/login" class="text-primary-600 font-semibold">
+              Inicia sesión
+            </a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>

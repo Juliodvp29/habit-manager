@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Verificar Email</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="flex flex-col items-center justify-center min-h-full px-4">
+    <!-- Icono -->
+    <div class="mb-8">
+      <ion-icon name="mail-outline" class="text-primary-500" style="font-size: 80px;"></ion-icon>
+    </div>
+
+    <!-- Título y descripción -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-primary-600 mb-4">Verifica tu correo</h1>
+      <p class="text-gray-600 mb-2">
+        Hemos enviado un código de verificación a:
+      </p>
+      <p class="font-semibold text-gray-800">{{ email() }}</p>
+      <p class="text-sm text-gray-500 mt-4">
+        Por favor, revisa tu bandeja de entrada e ingresa el código de 6 dígitos
+      </p>
+    </div>
+
+    <!-- Formulario -->
+    <div class="w-full max-w-md">
+      <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()">
+
+        <!-- Código de verificación -->
+        <ion-item class="mb-6 rounded-lg">
+          <ion-icon name="shield-checkmark-outline" slot="start" class="text-primary-500"></ion-icon>
+          <ion-input formControlName="code" type="text" inputmode="numeric" label="Código de verificación"
+            labelPlacement="floating" placeholder="123456" maxlength="6" [clearInput]="true"></ion-input>
+        </ion-item>
+
+        <!-- Submit Button -->
+        <ion-button type="submit" expand="block" [disabled]="verifyForm.invalid || isLoading()" class="mb-4">
+          @if (isLoading()) {
+          Verificando...
+          } @else {
+          Verificar
+          }
+        </ion-button>
+
+        <!-- Resend Button -->
+        <ion-button type="button" expand="block" fill="outline" [disabled]="isResending()" (click)="resendCode()">
+          @if (isResending()) {
+          Reenviando...
+          } @else {
+          Reenviar código
+          }
+        </ion-button>
+      </form>
+    </div>
+  </div>
+</ion-content>
