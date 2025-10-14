@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   IonButton,
   IonContent,
@@ -8,21 +8,21 @@ import {
   IonIcon,
   IonInput,
   IonItem,
+  IonSpinner,
   IonTitle,
   IonToolbar,
   ToastController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { mailOutline, shieldCheckmarkOutline } from 'ionicons/icons';
+import { mailOutline, refreshOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/core/services/auth-service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-verify-email',
   templateUrl: './verify-email.page.html',
   styleUrls: ['./verify-email.page.scss'],
   standalone: true,
-  imports: [IonHeader,
+  imports: [IonSpinner, IonHeader,
     IonToolbar,
     IonTitle,
     IonContent,
@@ -47,7 +47,7 @@ export class VerifyEmailPage implements OnInit {
   verifyForm: FormGroup;
 
   constructor() {
-    addIcons({ mailOutline, shieldCheckmarkOutline });
+    addIcons({ mailOutline, shieldCheckmarkOutline, refreshOutline });
 
     this.verifyForm = this.fb.group({
       code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]

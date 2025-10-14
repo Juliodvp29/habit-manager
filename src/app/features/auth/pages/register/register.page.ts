@@ -10,24 +10,23 @@ import {
   IonIcon,
   IonInput,
   IonItem,
-  IonTitle,
+  IonSpinner,
   IonToolbar,
   ToastController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, personOutline } from 'ionicons/icons';
+import { alertCircleOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, personAddOutline, personOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/core/services/auth-service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonSpinner,
     IonHeader,
     IonToolbar,
     IonButtons,
     IonBackButton,
-    IonTitle,
     IonContent,
     IonItem,
     IonInput,
@@ -53,7 +52,7 @@ export class RegisterPage {
   registerForm: FormGroup;
 
   constructor() {
-    addIcons({ mailOutline, lockClosedOutline, personOutline, eyeOutline, eyeOffOutline });
+    addIcons({ personAddOutline, personOutline, mailOutline, lockClosedOutline, alertCircleOutline, eyeOutline, eyeOffOutline });
 
     this.registerForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(3)]],

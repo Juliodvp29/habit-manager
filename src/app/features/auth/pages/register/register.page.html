@@ -1,81 +1,117 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="px-4">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/auth/login"></ion-back-button>
+      <ion-back-button defaultHref="/auth/login" text=""
+        class="text-neutral-700 dark:text-neutral-300"></ion-back-button>
     </ion-buttons>
-    <ion-title>Registro</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="flex flex-col items-center justify-center min-h-full px-4">
-    <!-- Título -->
-    <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-primary-600 mb-2">Crear cuenta</h1>
-      <p class="text-gray-600">Completa tus datos para comenzar</p>
+  <div class="flex flex-col items-center justify-center min-h-full px-6 py-8">
+
+    <!-- Título minimalista -->
+    <div class="text-center mb-10">
+      <div class="mb-4">
+        <div
+          class="w-16 h-16 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-secondary-500/20">
+          <ion-icon name="person-add-outline" class="text-white text-3xl"></ion-icon>
+        </div>
+      </div>
+      <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">Crear cuenta</h1>
+      <p class="text-neutral-500 dark:text-neutral-400 text-sm">Completa tus datos para comenzar</p>
     </div>
 
     <!-- Formulario -->
-    <div class="w-full max-w-md">
+    <div class="w-full max-w-sm">
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
         <!-- Full Name -->
-        <ion-item class="mb-4 rounded-lg">
-          <ion-icon name="person-outline" slot="start" class="text-primary-500"></ion-icon>
-          <ion-input formControlName="fullName" type="text" label="Nombre completo" labelPlacement="floating"
-            placeholder="Juan Pérez" [clearInput]="true"></ion-input>
-        </ion-item>
+        <div class="mb-4">
+          <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            <ion-icon name="person-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
+            <ion-input formControlName="fullName" type="text" label="Nombre completo" labelPlacement="floating"
+              placeholder="Juan Pérez" [clearInput]="true" class="text-neutral-900 dark:text-neutral-50">
+            </ion-input>
+          </ion-item>
+        </div>
 
         <!-- Email -->
-        <ion-item class="mb-4 rounded-lg">
-          <ion-icon name="mail-outline" slot="start" class="text-primary-500"></ion-icon>
-          <ion-input formControlName="email" type="email" label="Correo electrónico" labelPlacement="floating"
-            placeholder="tu@email.com" [clearInput]="true"></ion-input>
-        </ion-item>
+        <div class="mb-4">
+          <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            <ion-icon name="mail-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
+            <ion-input formControlName="email" type="email" label="Correo electrónico" labelPlacement="floating"
+              placeholder="tu@email.com" [clearInput]="true" class="text-neutral-900 dark:text-neutral-50">
+            </ion-input>
+          </ion-item>
+        </div>
 
         <!-- Password -->
-        <ion-item class="mb-4 rounded-lg">
-          <ion-icon name="lock-closed-outline" slot="start" class="text-primary-500"></ion-icon>
-          <ion-input formControlName="password" [type]="showPassword() ? 'text' : 'password'" label="Contraseña"
-            labelPlacement="floating" placeholder="••••••••"></ion-input>
-          <ion-icon [name]="showPassword() ? 'eye-outline' : 'eye-off-outline'" slot="end" (click)="togglePassword()"
-            class="cursor-pointer text-gray-400"></ion-icon>
-        </ion-item>
+        <div class="mb-4">
+          <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            <ion-icon name="lock-closed-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
+            <ion-input formControlName="password" [type]="showPassword() ? 'text' : 'password'" label="Contraseña"
+              labelPlacement="floating" placeholder="••••••••" class="text-neutral-900 dark:text-neutral-50">
+            </ion-input>
+            <ion-icon [name]="showPassword() ? 'eye-outline' : 'eye-off-outline'" slot="end" (click)="togglePassword()"
+              class="cursor-pointer text-neutral-400 dark:text-neutral-500 hover:text-primary-500 transition-colors">
+            </ion-icon>
+          </ion-item>
+        </div>
 
         <!-- Confirm Password -->
-        <ion-item class="mb-4 rounded-lg">
-          <ion-icon name="lock-closed-outline" slot="start" class="text-primary-500"></ion-icon>
-          <ion-input formControlName="confirmPassword" [type]="showConfirmPassword() ? 'text' : 'password'"
-            label="Confirmar contraseña" labelPlacement="floating" placeholder="••••••••"></ion-input>
-          <ion-icon [name]="showConfirmPassword() ? 'eye-outline' : 'eye-off-outline'" slot="end"
-            (click)="toggleConfirmPassword()" class="cursor-pointer text-gray-400"></ion-icon>
-        </ion-item>
+        <div class="mb-2">
+          <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            <ion-icon name="lock-closed-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
+            <ion-input formControlName="confirmPassword" [type]="showConfirmPassword() ? 'text' : 'password'"
+              label="Confirmar contraseña" labelPlacement="floating" placeholder="••••••••"
+              class="text-neutral-900 dark:text-neutral-50">
+            </ion-input>
+            <ion-icon [name]="showConfirmPassword() ? 'eye-outline' : 'eye-off-outline'" slot="end"
+              (click)="toggleConfirmPassword()"
+              class="cursor-pointer text-neutral-400 dark:text-neutral-500 hover:text-primary-500 transition-colors">
+            </ion-icon>
+          </ion-item>
+        </div>
 
         <!-- Error Message -->
         @if (registerForm.get('confirmPassword')?.hasError('passwordMismatch') &&
         registerForm.get('confirmPassword')?.touched) {
-        <div class="text-red-500 text-sm mb-4 px-2">
-          Las contraseñas no coinciden
+        <div class="text-red-500 text-xs mb-4 px-2 flex items-center gap-1">
+          <ion-icon name="alert-circle-outline" class="text-sm"></ion-icon>
+          <span>Las contraseñas no coinciden</span>
         </div>
         }
 
         <!-- Submit Button -->
-        <ion-button type="submit" expand="block" [disabled]="registerForm.invalid || isLoading()" class="mb-4">
+        <ion-button type="submit" expand="block" [disabled]="registerForm.invalid || isLoading()"
+          class="mb-6 h-12 font-medium mt-4" shape="round">
           @if (isLoading()) {
-          Registrando...
+          <ion-spinner name="crescent" class="mr-2"></ion-spinner>
+          Creando cuenta...
           } @else {
           Crear cuenta
           }
         </ion-button>
 
+        <!-- Divider -->
+        <div class="relative mb-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-neutral-200 dark:border-neutral-800"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400">
+              ¿Ya tienes cuenta?
+            </span>
+          </div>
+        </div>
+
         <!-- Login Link -->
         <div class="text-center">
-          <p class="text-sm text-gray-600">
-            ¿Ya tienes cuenta?
-            <a routerLink="/auth/login" class="text-primary-600 font-semibold">
-              Inicia sesión
-            </a>
-          </p>
+          <a routerLink="/auth/login"
+            class="text-primary-600 dark:text-primary-400 font-medium hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+            Iniciar sesión
+          </a>
         </div>
       </form>
     </div>

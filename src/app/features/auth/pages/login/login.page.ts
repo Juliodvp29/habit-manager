@@ -8,10 +8,11 @@ import {
   IonIcon,
   IonInput,
   IonItem,
+  IonSpinner,
   ToastController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline } from 'ionicons/icons';
+import { checkmarkDoneOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/core/services/auth-service';
 
 @Component({
@@ -19,7 +20,7 @@ import { AuthService } from 'src/app/core/services/auth-service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonSpinner,
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
@@ -44,7 +45,7 @@ export class LoginPage implements OnInit {
   loginForm: FormGroup;
 
   constructor() {
-    addIcons({ mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline });
+    addIcons({ checkmarkDoneOutline, mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline });
 
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],

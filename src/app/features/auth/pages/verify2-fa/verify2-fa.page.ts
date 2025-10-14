@@ -10,10 +10,10 @@ import {
   IonItem,
   IonTitle,
   IonToolbar,
-  ToastController
+  ToastController, IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { keyOutline, shieldCheckmarkOutline } from 'ionicons/icons';
+import { keyOutline, shieldCheckmarkOutline, arrowBackOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/core/services/auth-service';
 
 @Component({
@@ -21,7 +21,7 @@ import { AuthService } from 'src/app/core/services/auth-service';
   templateUrl: './verify2-fa.page.html',
   styleUrls: ['./verify2-fa.page.scss'],
   standalone: true,
-  imports: [IonHeader,
+  imports: [IonSpinner, IonHeader,
     IonToolbar,
     IonTitle,
     IonContent,
@@ -46,7 +46,7 @@ export class Verify2FaPage implements OnInit {
   verifyForm: FormGroup;
 
   constructor() {
-    addIcons({ keyOutline, shieldCheckmarkOutline });
+    addIcons({ shieldCheckmarkOutline, keyOutline, arrowBackOutline });
 
     this.verifyForm = this.fb.group({
       code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]

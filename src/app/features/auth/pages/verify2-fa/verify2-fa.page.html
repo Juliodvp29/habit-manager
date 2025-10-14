@@ -1,50 +1,66 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Verificación 2FA</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="px-4">
+    <ion-title class="text-neutral-900 dark:text-neutral-50">Verificación 2FA</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="flex flex-col items-center justify-center min-h-full px-4">
-    <!-- Icono -->
+  <div class="flex flex-col items-center justify-center min-h-full px-6 py-12">
+
+    <!-- Icono con estilo moderno -->
     <div class="mb-8">
-      <ion-icon name="shield-checkmark-outline" class="text-primary-500" style="font-size: 80px;"></ion-icon>
+      <div
+        class="w-24 h-24 bg-gradient-to-br from-secondary-400/10 to-secondary-600/10 dark:from-secondary-400/20 dark:to-secondary-600/20 rounded-3xl flex items-center justify-center">
+        <div
+          class="w-20 h-20 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl flex items-center justify-center shadow-lg shadow-secondary-500/20">
+          <ion-icon name="shield-checkmark-outline" class="text-white text-5xl"></ion-icon>
+        </div>
+      </div>
     </div>
 
     <!-- Título y descripción -->
-    <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-primary-600 mb-4">Verificación de dos factores</h1>
-      <p class="text-gray-600 mb-2">
-        Hemos enviado un código de seguridad a:
+    <div class="text-center mb-10 max-w-md">
+      <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-4">Verificación de seguridad</h1>
+      <p class="text-neutral-600 dark:text-neutral-400 mb-3 text-sm leading-relaxed">
+        Hemos enviado un código de seguridad a
       </p>
-      <p class="font-semibold text-gray-800">{{ email() }}</p>
-      <p class="text-sm text-gray-500 mt-4">
-        Por favor, ingresa el código de 6 dígitos para completar tu inicio de sesión
+      <div class="bg-neutral-100 dark:bg-neutral-800 rounded-xl px-4 py-3 mb-4">
+        <p class="font-semibold text-neutral-900 dark:text-neutral-50">{{ email() }}</p>
+      </div>
+      <p class="text-xs text-neutral-500 dark:text-neutral-400">
+        Ingresa el código de 6 dígitos para completar tu inicio de sesión
       </p>
     </div>
 
     <!-- Formulario -->
-    <div class="w-full max-w-md">
+    <div class="w-full max-w-sm">
       <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()">
 
         <!-- Código 2FA -->
-        <ion-item class="mb-6 rounded-lg">
-          <ion-icon name="key-outline" slot="start" class="text-primary-500"></ion-icon>
-          <ion-input formControlName="code" type="text" inputmode="numeric" label="Código de seguridad"
-            labelPlacement="floating" placeholder="123456" maxlength="6" [clearInput]="true"></ion-input>
-        </ion-item>
+        <div class="mb-6">
+          <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            <ion-icon name="key-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
+            <ion-input formControlName="code" type="text" inputmode="numeric" label="Código de seguridad"
+              labelPlacement="floating" placeholder="123456" maxlength="6" [clearInput]="true"
+              class="text-neutral-900 dark:text-neutral-50 text-lg tracking-widest text-center font-semibold">
+            </ion-input>
+          </ion-item>
+        </div>
 
         <!-- Submit Button -->
-        <ion-button type="submit" expand="block" [disabled]="verifyForm.invalid || isLoading()" class="mb-4">
+        <ion-button type="submit" expand="block" [disabled]="verifyForm.invalid || isLoading()"
+          class="mb-4 h-12 font-medium" shape="round">
           @if (isLoading()) {
+          <ion-spinner name="crescent" class="mr-2"></ion-spinner>
           Verificando...
           } @else {
-          Verificar
+          Verificar código
           }
         </ion-button>
 
         <!-- Back Button -->
-        <ion-button type="button" expand="block" fill="outline" (click)="goBack()">
+        <ion-button type="button" expand="block" fill="clear" (click)="goBack()" class="h-12 font-medium">
+          <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
           Volver al inicio de sesión
         </ion-button>
       </form>

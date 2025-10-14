@@ -6,8 +6,10 @@ import {
   IonButton,
   IonContent,
   IonHeader,
+  IonIcon,
   IonInput,
   IonItem,
+  IonSpinner,
   IonTitle,
   IonToolbar,
   ToastController
@@ -19,7 +21,7 @@ import { AuthService } from 'src/app/core/services/auth-service';
   templateUrl: './reset-password.page.html',
   styleUrls: ['./reset-password.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonSpinner, IonIcon,
     IonContent,
     IonHeader,
     IonTitle,
