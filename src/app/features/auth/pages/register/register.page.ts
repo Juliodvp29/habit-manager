@@ -14,9 +14,11 @@ import {
   IonToolbar,
   ToastController
 } from '@ionic/angular/standalone';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { alertCircleOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, personAddOutline, personOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/core/services/auth-service';
+import { TranslationService } from 'src/app/core/services/translation-service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -33,7 +35,8 @@ import { AuthService } from 'src/app/core/services/auth-service';
     IonButton,
     IonIcon,
     ReactiveFormsModule,
-    RouterLink
+    RouterLink,
+    TranslateModule
   ]
 })
 export class RegisterPage {
@@ -43,6 +46,8 @@ export class RegisterPage {
   private authService = inject(AuthService);
   private router = inject(Router);
   private toastController = inject(ToastController);
+  public translationService = inject(TranslationService);  // ← Inyectar servicio
+
 
   // Signals
   showPassword = signal<boolean>(false);

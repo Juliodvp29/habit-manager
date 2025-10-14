@@ -8,17 +8,21 @@ export class ThemeService {
 
   private storageService = inject(StorageService);
 
-  public isDarkMode = signal<boolean>(this.storageService.getTheme() === 'dark');
+  public isDarkMode = signal<boolean>(false);
 
   constructor() {
-    // Aplicar tema al iniciar
-    this.applyTheme();
+    // Leer el tema actual del DOM (ya aplicado por el inicializador)
+    const currentTheme = this.storageService.getTheme();
+    this.isDarkMode.set(currentTheme === 'dark');
 
-    // Efecto para guardar cambios de tema
+    console.log('ThemeService initialized with theme:', currentTheme);
+
+    // Efecto para guardar y aplicar cambios de tema
     effect(() => {
       const theme = this.isDarkMode() ? 'dark' : 'light';
       this.storageService.saveTheme(theme);
       this.applyTheme();
+      console.log('Theme changed to:', theme);
     });
   }
 
@@ -32,9 +36,19 @@ export class ThemeService {
 
   private applyTheme(): void {
     const prefersDark = this.isDarkMode();
-    document.body.classList.toggle('dark', prefersDark);
+
+    // Aplicar al body
+    if (prefersDark) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
 
     // Para Ionic
-    document.documentElement.classList.toggle('ion-palette-dark', prefersDark);
+    if (prefersDark) {
+      document.documentElement.classList.add('ion-palette-dark');
+    } else {
+      document.documentElement.classList.remove('ion-palette-dark');
+    }
   }
 }

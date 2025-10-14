@@ -1,8 +1,8 @@
 <ion-header class="ion-no-border">
   <ion-toolbar class="px-4">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/auth/login" text=""
-        class="text-neutral-700 dark:text-neutral-300"></ion-back-button>
+      <ion-back-button defaultHref="/auth/login" text="" class="text-neutral-700 dark:text-neutral-300">
+      </ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -10,7 +10,7 @@
 <ion-content class="ion-padding">
   <div class="flex flex-col items-center justify-center min-h-full px-6 py-8">
 
-    <!-- Título minimalista -->
+    <!-- Título -->
     <div class="text-center mb-10">
       <div class="mb-4">
         <div
@@ -18,20 +18,25 @@
           <ion-icon name="person-add-outline" class="text-white text-3xl"></ion-icon>
         </div>
       </div>
-      <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">Crear cuenta</h1>
-      <p class="text-neutral-500 dark:text-neutral-400 text-sm">Completa tus datos para comenzar</p>
+      <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
+        {{ 'AUTH.REGISTER.TITLE' | translate }}
+      </h1>
+      <p class="text-neutral-500 dark:text-neutral-400 text-sm">
+        {{ 'AUTH.REGISTER.SUBTITLE' | translate }}
+      </p>
     </div>
 
     <!-- Formulario -->
     <div class="w-full max-w-sm">
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-        <!-- Full Name -->
+        <!-- Nombre completo -->
         <div class="mb-4">
           <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
             <ion-icon name="person-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
-            <ion-input formControlName="fullName" type="text" label="Nombre completo" labelPlacement="floating"
-              placeholder="Juan Pérez" [clearInput]="true" class="text-neutral-900 dark:text-neutral-50">
+            <ion-input formControlName="fullName" type="text" [label]="'AUTH.REGISTER.FULL_NAME' | translate"
+              labelPlacement="floating" [placeholder]="'AUTH.REGISTER.FULL_NAME_PLACEHOLDER' | translate"
+              [clearInput]="true" class="text-neutral-900 dark:text-neutral-50">
             </ion-input>
           </ion-item>
         </div>
@@ -40,18 +45,21 @@
         <div class="mb-4">
           <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
             <ion-icon name="mail-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
-            <ion-input formControlName="email" type="email" label="Correo electrónico" labelPlacement="floating"
-              placeholder="tu@email.com" [clearInput]="true" class="text-neutral-900 dark:text-neutral-50">
+            <ion-input formControlName="email" type="email" [label]="'AUTH.REGISTER.EMAIL' | translate"
+              labelPlacement="floating" [placeholder]="'AUTH.REGISTER.EMAIL_PLACEHOLDER' | translate"
+              [clearInput]="true" class="text-neutral-900 dark:text-neutral-50">
             </ion-input>
           </ion-item>
         </div>
 
-        <!-- Password -->
+        <!-- Contraseña -->
         <div class="mb-4">
           <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
             <ion-icon name="lock-closed-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
-            <ion-input formControlName="password" [type]="showPassword() ? 'text' : 'password'" label="Contraseña"
-              labelPlacement="floating" placeholder="••••••••" class="text-neutral-900 dark:text-neutral-50">
+            <ion-input formControlName="password" [type]="showPassword() ? 'text' : 'password'"
+              [label]="'AUTH.REGISTER.PASSWORD' | translate" labelPlacement="floating"
+              [placeholder]="'AUTH.REGISTER.PASSWORD_PLACEHOLDER' | translate"
+              class="text-neutral-900 dark:text-neutral-50">
             </ion-input>
             <ion-icon [name]="showPassword() ? 'eye-outline' : 'eye-off-outline'" slot="end" (click)="togglePassword()"
               class="cursor-pointer text-neutral-400 dark:text-neutral-500 hover:text-primary-500 transition-colors">
@@ -59,12 +67,13 @@
           </ion-item>
         </div>
 
-        <!-- Confirm Password -->
+        <!-- Confirmar contraseña -->
         <div class="mb-2">
           <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
             <ion-icon name="lock-closed-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
             <ion-input formControlName="confirmPassword" [type]="showConfirmPassword() ? 'text' : 'password'"
-              label="Confirmar contraseña" labelPlacement="floating" placeholder="••••••••"
+              [label]="'AUTH.REGISTER.CONFIRM_PASSWORD' | translate" labelPlacement="floating"
+              [placeholder]="'AUTH.REGISTER.PASSWORD_PLACEHOLDER' | translate"
               class="text-neutral-900 dark:text-neutral-50">
             </ion-input>
             <ion-icon [name]="showConfirmPassword() ? 'eye-outline' : 'eye-off-outline'" slot="end"
@@ -74,23 +83,23 @@
           </ion-item>
         </div>
 
-        <!-- Error Message -->
+        <!-- Error: contraseñas no coinciden -->
         @if (registerForm.get('confirmPassword')?.hasError('passwordMismatch') &&
         registerForm.get('confirmPassword')?.touched) {
         <div class="text-red-500 text-xs mb-4 px-2 flex items-center gap-1">
           <ion-icon name="alert-circle-outline" class="text-sm"></ion-icon>
-          <span>Las contraseñas no coinciden</span>
+          <span>{{ 'AUTH.REGISTER.PASSWORD_MISMATCH' | translate }}</span>
         </div>
         }
 
-        <!-- Submit Button -->
+        <!-- Botón enviar -->
         <ion-button type="submit" expand="block" [disabled]="registerForm.invalid || isLoading()"
           class="mb-6 h-12 font-medium mt-4" shape="round">
           @if (isLoading()) {
           <ion-spinner name="crescent" class="mr-2"></ion-spinner>
-          Creando cuenta...
+          {{ 'AUTH.REGISTER.LOADING' | translate }}
           } @else {
-          Crear cuenta
+          {{ 'AUTH.REGISTER.SUBMIT' | translate }}
           }
         </ion-button>
 
@@ -101,16 +110,16 @@
           </div>
           <div class="relative flex justify-center text-sm">
             <span class="px-4 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400">
-              ¿Ya tienes cuenta?
+              {{ 'AUTH.REGISTER.HAVE_ACCOUNT' | translate }}
             </span>
           </div>
         </div>
 
-        <!-- Login Link -->
+        <!-- Enlace login -->
         <div class="text-center">
           <a routerLink="/auth/login"
             class="text-primary-600 dark:text-primary-400 font-medium hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
-            Iniciar sesión
+            {{ 'AUTH.REGISTER.LOGIN' | translate }}
           </a>
         </div>
       </form>

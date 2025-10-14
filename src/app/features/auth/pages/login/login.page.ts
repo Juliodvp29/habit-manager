@@ -11,9 +11,11 @@ import {
   IonSpinner,
   ToastController
 } from '@ionic/angular/standalone';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { checkmarkDoneOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline } from 'ionicons/icons';
+import { checkmarkDoneOutline, eyeOffOutline, eyeOutline, languageOutline, lockClosedOutline, mailOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/core/services/auth-service';
+import { TranslationService } from 'src/app/core/services/translation-service';
 
 @Component({
   selector: 'app-login',
@@ -29,6 +31,7 @@ import { AuthService } from 'src/app/core/services/auth-service';
     IonInput,
     IonIcon,
     IonButton,
+    TranslateModule
   ],
 })
 export class LoginPage implements OnInit {
@@ -37,6 +40,7 @@ export class LoginPage implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private toastController = inject(ToastController);
+  public translationService = inject(TranslationService);  // ← Inyectar servicio
 
   // Signals
   showPassword = signal<boolean>(false);
@@ -45,7 +49,7 @@ export class LoginPage implements OnInit {
   loginForm: FormGroup;
 
   constructor() {
-    addIcons({ checkmarkDoneOutline, mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline });
+    addIcons({ checkmarkDoneOutline, languageOutline, mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline });
 
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -54,7 +58,6 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit(): void {
-    // No initialization required for now
     return;
   }
 
@@ -64,7 +67,10 @@ export class LoginPage implements OnInit {
 
   async onSubmit() {
     if (this.loginForm.invalid) {
-      this.showToast('Por favor completa todos los campos correctamente', 'warning');
+      this.showToast(
+        this.translationService.translate('AUTH.VALIDATION.COMPLETE_FORM'),
+        'warning'
+      );
       return;
     }
 
@@ -73,7 +79,6 @@ export class LoginPage implements OnInit {
     this.authService.login(this.loginForm.value).subscribe({
       next: async (response) => {
         if (response.requires2FA) {
-          // Redirigir a verificación 2FA
           await this.router.navigate(['/auth/verify-2fa'], {
             state: {
               userId: response.userId,
@@ -81,15 +86,23 @@ export class LoginPage implements OnInit {
             }
           });
         } else if (response.token && response.user) {
-          // Login exitoso
-          await this.showToast('¡Bienvenido de nuevo!', 'success');
+          // Sincronizar idioma del usuario si viene del backend
+          if (response.user.preferredLanguage?.code) {
+            this.translationService.syncWithUserPreference(response.user.preferredLanguage.code);
+          }
+
+          await this.showToast(
+            this.translationService.translate('AUTH.LOGIN.SUCCESS'),
+            'success'
+          );
           await this.router.navigate(['/tabs']);
         }
         this.isLoading.set(false);
       },
       error: async (error) => {
         this.isLoading.set(false);
-        const message = error.error?.message || 'Error al iniciar sesión';
+        const message = error.error?.message ||
+          this.translationService.translate('AUTH.LOGIN.ERROR');
         await this.showToast(message, 'danger');
       }
     });

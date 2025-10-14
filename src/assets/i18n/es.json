@@ -1,0 +1,108 @@
+{
+  "AUTH": {
+    "LOGIN": {
+      "TITLE": "Bienvenido de vuelta",
+      "SUBTITLE": "Inicia sesión para continuar",
+      "EMAIL": "Correo electrónico",
+      "EMAIL_PLACEHOLDER": "tu@email.com",
+      "PASSWORD": "Contraseña",
+      "PASSWORD_PLACEHOLDER": "••••••••",
+      "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
+      "SUBMIT": "Iniciar sesión",
+      "LOADING": "Iniciando sesión...",
+      "NO_ACCOUNT": "¿No tienes cuenta?",
+      "CREATE_ACCOUNT": "Crear cuenta nueva",
+      "SUCCESS": "¡Bienvenido de nuevo!",
+      "ERROR": "Error al iniciar sesión"
+    },
+    "REGISTER": {
+      "TITLE": "Crear cuenta",
+      "SUBTITLE": "Completa tus datos para comenzar",
+      "FULL_NAME": "Nombre completo",
+      "FULL_NAME_PLACEHOLDER": "Juan Pérez",
+      "EMAIL": "Correo electrónico",
+      "EMAIL_PLACEHOLDER": "tu@email.com",
+      "PASSWORD": "Contraseña",
+      "PASSWORD_PLACEHOLDER": "••••••••",
+      "CONFIRM_PASSWORD": "Confirmar contraseña",
+      "PASSWORD_MISMATCH": "Las contraseñas no coinciden",
+      "SUBMIT": "Crear cuenta",
+      "LOADING": "Creando cuenta...",
+      "HAVE_ACCOUNT": "¿Ya tienes cuenta?",
+      "LOGIN": "Iniciar sesión",
+      "SUCCESS": "Registro exitoso. Revisa tu correo para verificar tu cuenta",
+      "ERROR": "Error al registrarse"
+    },
+    "VERIFY_EMAIL": {
+      "TITLE": "Verifica tu correo",
+      "SUBTITLE": "Hemos enviado un código de verificación a",
+      "DESCRIPTION": "Por favor, revisa tu bandeja de entrada e ingresa el código de 6 dígitos",
+      "CODE": "Código de verificación",
+      "CODE_PLACEHOLDER": "123456",
+      "SUBMIT": "Verificar código",
+      "LOADING": "Verificando...",
+      "RESEND": "Reenviar código",
+      "RESENDING": "Reenviando...",
+      "SUCCESS": "Email verificado exitosamente",
+      "ERROR": "Código inválido o expirado",
+      "RESEND_SUCCESS": "Código reenviado a tu correo"
+    },
+    "VERIFY_2FA": {
+      "TITLE": "Verificación de seguridad",
+      "SUBTITLE": "Hemos enviado un código de seguridad a",
+      "DESCRIPTION": "Ingresa el código de 6 dígitos para completar tu inicio de sesión",
+      "CODE": "Código de seguridad",
+      "CODE_PLACEHOLDER": "123456",
+      "SUBMIT": "Verificar código",
+      "LOADING": "Verificando...",
+      "BACK": "Volver al inicio de sesión",
+      "SUCCESS": "Autenticación exitosa",
+      "ERROR": "Código inválido o expirado"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "¿Olvidaste tu contraseña?",
+      "SUBTITLE": "Introduce tu correo y te enviaremos instrucciones para restablecerla.",
+      "EMAIL": "Correo electrónico",
+      "SUBMIT": "Enviar instrucciones",
+      "LOADING": "Enviando...",
+      "BACK": "Volver al inicio de sesión",
+      "SUCCESS": "Si el correo existe, recibirás instrucciones para resetear tu contraseña."
+    },
+    "RESET_PASSWORD": {
+      "TITLE": "Nueva contraseña",
+      "SUBTITLE": "Introduce el código que recibiste y crea una nueva contraseña segura",
+      "EMAIL": "Correo electrónico",
+      "CODE": "Código de verificación",
+      "CODE_PLACEHOLDER": "Código",
+      "NEW_PASSWORD": "Nueva contraseña",
+      "CONFIRM_PASSWORD": "Confirmar contraseña",
+      "PASSWORD_MISMATCH": "Las contraseñas no coinciden",
+      "SUBMIT": "Restablecer contraseña",
+      "LOADING": "Restableciendo...",
+      "BACK": "Volver al inicio de sesión",
+      "SUCCESS": "Contraseña restablecida correctamente. Inicia sesión con tu nueva contraseña.",
+      "ERROR": "Error al restablecer la contraseña"
+    },
+    "VALIDATION": {
+      "REQUIRED": "Este campo es requerido",
+      "EMAIL_INVALID": "Correo electrónico inválido",
+      "MIN_LENGTH": "Mínimo {{length}} caracteres",
+      "COMPLETE_FORM": "Por favor completa todos los campos correctamente"
+    }
+  },
+  "COMMON": {
+    "YES": "Sí",
+    "NO": "No",
+    "OK": "Aceptar",
+    "CANCEL": "Cancelar",
+    "SAVE": "Guardar",
+    "DELETE": "Eliminar",
+    "EDIT": "Editar",
+    "CLOSE": "Cerrar",
+    "SEARCH": "Buscar",
+    "LOADING": "Cargando...",
+    "ERROR": "Error",
+    "SUCCESS": "Éxito",
+    "WARNING": "Advertencia"
+  }
+}

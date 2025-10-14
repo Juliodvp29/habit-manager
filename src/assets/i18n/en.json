@@ -1,0 +1,108 @@
+{
+  "AUTH": {
+    "LOGIN": {
+      "TITLE": "Welcome back",
+      "SUBTITLE": "Sign in to continue",
+      "EMAIL": "Email",
+      "EMAIL_PLACEHOLDER": "you@email.com",
+      "PASSWORD": "Password",
+      "PASSWORD_PLACEHOLDER": "••••••••",
+      "FORGOT_PASSWORD": "Forgot your password?",
+      "SUBMIT": "Sign in",
+      "LOADING": "Signing in...",
+      "NO_ACCOUNT": "Don't have an account?",
+      "CREATE_ACCOUNT": "Create a new account",
+      "SUCCESS": "Welcome back!",
+      "ERROR": "Error signing in"
+    },
+    "REGISTER": {
+      "TITLE": "Create account",
+      "SUBTITLE": "Fill your details to get started",
+      "FULL_NAME": "Full name",
+      "FULL_NAME_PLACEHOLDER": "John Doe",
+      "EMAIL": "Email",
+      "EMAIL_PLACEHOLDER": "you@email.com",
+      "PASSWORD": "Password",
+      "PASSWORD_PLACEHOLDER": "••••••••",
+      "CONFIRM_PASSWORD": "Confirm password",
+      "PASSWORD_MISMATCH": "Passwords do not match",
+      "SUBMIT": "Create account",
+      "LOADING": "Creating account...",
+      "HAVE_ACCOUNT": "Already have an account?",
+      "LOGIN": "Sign in",
+      "SUCCESS": "Registration successful. Check your email to verify your account",
+      "ERROR": "Error signing up"
+    },
+    "VERIFY_EMAIL": {
+      "TITLE": "Verify your email",
+      "SUBTITLE": "We've sent a verification code to",
+      "DESCRIPTION": "Please check your inbox and enter the 6-digit code",
+      "CODE": "Verification code",
+      "CODE_PLACEHOLDER": "123456",
+      "SUBMIT": "Verify code",
+      "LOADING": "Verifying...",
+      "RESEND": "Resend code",
+      "RESENDING": "Resending...",
+      "SUCCESS": "Email verified successfully",
+      "ERROR": "Invalid or expired code",
+      "RESEND_SUCCESS": "Code resent to your email"
+    },
+    "VERIFY_2FA": {
+      "TITLE": "Security verification",
+      "SUBTITLE": "We've sent a security code to",
+      "DESCRIPTION": "Enter the 6-digit code to complete your sign in",
+      "CODE": "Security code",
+      "CODE_PLACEHOLDER": "123456",
+      "SUBMIT": "Verify code",
+      "LOADING": "Verifying...",
+      "BACK": "Back to sign in",
+      "SUCCESS": "Authentication successful",
+      "ERROR": "Invalid or expired code"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "Forgot your password?",
+      "SUBTITLE": "Enter your email and we'll send instructions to reset it.",
+      "EMAIL": "Email",
+      "SUBMIT": "Send instructions",
+      "LOADING": "Sending...",
+      "BACK": "Back to sign in",
+      "SUCCESS": "If the email exists, you'll receive instructions to reset your password."
+    },
+    "RESET_PASSWORD": {
+      "TITLE": "New password",
+      "SUBTITLE": "Enter the code you received and create a new secure password",
+      "EMAIL": "Email",
+      "CODE": "Verification code",
+      "CODE_PLACEHOLDER": "Code",
+      "NEW_PASSWORD": "New password",
+      "CONFIRM_PASSWORD": "Confirm password",
+      "PASSWORD_MISMATCH": "Passwords do not match",
+      "SUBMIT": "Reset password",
+      "LOADING": "Resetting...",
+      "BACK": "Back to sign in",
+      "SUCCESS": "Password reset successfully. Sign in with your new password.",
+      "ERROR": "Error resetting password"
+    },
+    "VALIDATION": {
+      "REQUIRED": "This field is required",
+      "EMAIL_INVALID": "Invalid email address",
+      "MIN_LENGTH": "Minimum {{length}} characters",
+      "COMPLETE_FORM": "Please complete all fields correctly"
+    }
+  },
+  "COMMON": {
+    "YES": "Yes",
+    "NO": "No",
+    "OK": "OK",
+    "CANCEL": "Cancel",
+    "SAVE": "Save",
+    "DELETE": "Delete",
+    "EDIT": "Edit",
+    "CLOSE": "Close",
+    "SEARCH": "Search",
+    "LOADING": "Loading...",
+    "ERROR": "Error",
+    "SUCCESS": "Success",
+    "WARNING": "Warning"
+  }
+}
