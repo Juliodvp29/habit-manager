@@ -1,0 +1,7 @@
+{
+  "name": "habit-manager",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
