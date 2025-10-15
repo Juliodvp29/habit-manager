@@ -1,0 +1,170 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="px-4 bg-white dark:bg-neutral-900">
+    <div class="flex items-center justify-between py-3">
+      <div>
+        <h1 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50">
+          {{ 'DASHBOARD.GREETING' | translate }}, {{ getUserFirstName() }}
+        </h1>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">
+          {{ getCurrentDate() }}
+        </p>
+      </div>
+      <button (click)="refreshDashboard()"
+        class="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+        <ion-icon name="refresh-outline" class="text-2xl text-neutral-700 dark:text-neutral-300"
+          [class.animate-spin]="isRefreshing()"></ion-icon>
+      </button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-neutral-50 dark:bg-neutral-950">
+  <div class="px-4 py-6 max-w-4xl mx-auto">
+
+    <!-- Loading state -->
+    @if (isLoading()) {
+    <div class="flex items-center justify-center py-20">
+      <ion-spinner name="crescent" class="w-12 h-12 text-primary-500"></ion-spinner>
+    </div>
+    }
+
+    <!-- Dashboard content -->
+    @else {
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <!-- Total hábitos -->
+      <div class="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-4 shadow-lg shadow-primary-500/20">
+        <div class="flex items-center gap-2 mb-2">
+          <ion-icon name="checkmark-circle" class="text-2xl text-white/90"></ion-icon>
+          <p class="text-xs font-medium text-white/80">{{ 'DASHBOARD.TOTAL_HABITS' | translate }}</p>
+        </div>
+        <p class="text-3xl font-bold text-white">{{ habits().length }}</p>
+      </div>
+
+      <!-- Completados hoy -->
+      <div
+        class="bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl p-4 shadow-lg shadow-secondary-500/20">
+        <div class="flex items-center gap-2 mb-2">
+          <ion-icon name="flame" class="text-2xl text-white/90"></ion-icon>
+          <p class="text-xs font-medium text-white/80">{{ 'DASHBOARD.COMPLETED_TODAY' | translate }}</p>
+        </div>
+        <p class="text-3xl font-bold text-white">{{ getCompletedCount() }}/{{ habits().length }}</p>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="bg-white dark:bg-neutral-900 rounded-2xl p-4 mb-6 shadow-sm">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-sm font-semibold text-neutral-900 dark:text-neutral-50">
+          {{ 'DASHBOARD.DAILY_PROGRESS' | translate }}
+        </p>
+        <p class="text-xs font-medium text-primary-600 dark:text-primary-400">
+          {{ getProgressPercentage() }}%
+        </p>
+      </div>
+      <div class="w-full h-3 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
+        <div class="h-full bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full transition-all duration-500"
+          [style.width.%]="getProgressPercentage()"></div>
+      </div>
+    </div>
+
+    <!-- Today's Habits -->
+    <div class="mb-4">
+      <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-50 mb-4">
+        {{ 'DASHBOARD.TODAYS_HABITS' | translate }}
+      </h2>
+
+      @if (habits().length === 0) {
+      <!-- Empty state -->
+      <div class="bg-white dark:bg-neutral-900 rounded-2xl p-8 text-center shadow-sm">
+        <div
+          class="w-20 h-20 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4">
+          <ion-icon name="add-circle-outline" class="text-4xl text-neutral-400"></ion-icon>
+        </div>
+        <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
+          {{ 'DASHBOARD.NO_HABITS_TITLE' | translate }}
+        </h3>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+          {{ 'DASHBOARD.NO_HABITS_SUBTITLE' | translate }}
+        </p>
+        <ion-button (click)="navigateToCreateHabit()" expand="block" shape="round">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          {{ 'DASHBOARD.CREATE_FIRST_HABIT' | translate }}
+        </ion-button>
+      </div>
+      } @else {
+      <!-- Habits list -->
+      <div class="space-y-3">
+        @for (habit of habits(); track habit.id) {
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow"
+          (click)="viewHabitDetails(habit.id)">
+          <div class="flex items-start gap-3">
+            <!-- Checkbox -->
+            <button (click)="toggleHabitCompletion($event, habit)" class="flex-shrink-0 mt-1"
+              [disabled]="habit.id === processingHabitId()">
+              @if (habit.id === processingHabitId()) {
+              <ion-spinner name="crescent" class="w-6 h-6 text-primary-500"></ion-spinner>
+              } @else {
+              <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all" [class]="habit.todayCompleted 
+                          ? 'bg-primary-500 border-primary-500' 
+                          : 'border-neutral-300 dark:border-neutral-700'">
+                @if (habit.todayCompleted) {
+                <ion-icon name="checkmark" class="text-white text-sm"></ion-icon>
+                }
+              </div>
+              }
+            </button>
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-neutral-900 dark:text-neutral-50 mb-1"
+                [class.line-through]="habit.todayCompleted" [class.text-neutral-400]="habit.todayCompleted">
+                {{ habit.title }}
+              </h3>
+              @if (habit.description) {
+              <p class="text-xs text-neutral-600 dark:text-neutral-400 mb-2 line-clamp-1">
+                {{ habit.description }}
+              </p>
+              }
+              <div class="flex items-center gap-3 text-xs">
+                <span class="flex items-center gap-1 text-neutral-600 dark:text-neutral-400">
+                  <ion-icon name="repeat-outline" class="text-sm"></ion-icon>
+                  {{ getFrequencyLabel(habit.frequency) }}
+                </span>
+                @if (habit.currentStreak && habit.currentStreak > 0) {
+                <span class="flex items-center gap-1 text-primary-600 dark:text-primary-400 font-medium">
+                  <ion-icon name="flame" class="text-sm"></ion-icon>
+                  {{ habit.currentStreak }} {{ 'DASHBOARD.DAYS' | translate }}
+                </span>
+                }
+              </div>
+            </div>
+
+            <!-- Progress indicator -->
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center" [class]="habit.todayCompleted 
+                        ? 'bg-primary-100 dark:bg-primary-900/30' 
+                        : 'bg-neutral-100 dark:bg-neutral-800'">
+                <span class="text-xs font-bold" [class]="habit.todayCompleted 
+                          ? 'text-primary-600 dark:text-primary-400' 
+                          : 'text-neutral-600 dark:text-neutral-400'">
+                  {{ habit.todayProgress }}/{{ habit.targetCount }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- FAB para crear hábito -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mb-16 mr-4">
+    <ion-fab-button (click)="navigateToCreateHabit()" color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

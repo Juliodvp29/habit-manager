@@ -91,6 +91,22 @@
       "COMPLETE_FORM": "Por favor completa todos los campos correctamente"
     }
   },
+  "DASHBOARD": {
+    "GREETING": "Hola",
+    "TOTAL_HABITS": "Total de hábitos",
+    "COMPLETED_TODAY": "Completados hoy",
+    "DAILY_PROGRESS": "Progreso del día",
+    "TODAYS_HABITS": "Hábitos de hoy",
+    "NO_HABITS_TITLE": "No tienes hábitos aún",
+    "NO_HABITS_SUBTITLE": "Comienza creando tu primer hábito y empieza a construir una mejor versión de ti mismo",
+    "CREATE_FIRST_HABIT": "Crear mi primer hábito",
+    "DAYS": "días",
+    "FREQUENCY": {
+      "DAILY": "Diario",
+      "WEEKLY": "Semanal",
+      "MONTHLY": "Mensual"
+    }
+  },
   "COMMON": {
     "YES": "Sí",
     "NO": "No",
