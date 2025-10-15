@@ -60,6 +60,7 @@
       "ERROR": "Invalid or expired code"
     },
     "FORGOT_PASSWORD": {
+      "HEAD": "Recover Password",
       "TITLE": "Forgot your password?",
       "SUBTITLE": "Enter your email and we'll send instructions to reset it.",
       "EMAIL": "Email",

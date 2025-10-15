@@ -12,7 +12,9 @@ import {
   IonToolbar,
   ToastController
 } from '@ionic/angular/standalone';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/core/services/auth-service';
+import { TranslationService } from 'src/app/core/services/translation-service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -29,7 +31,8 @@ import { AuthService } from 'src/app/core/services/auth-service';
     IonItem,
     IonInput,
     IonButton,
-    RouterModule
+    RouterModule,
+    TranslateModule
   ]
 })
 export class ForgotPasswordPage {
@@ -38,6 +41,7 @@ export class ForgotPasswordPage {
   private authService = inject(AuthService);
   private toastController = inject(ToastController);
   private router = inject(Router);
+  public translationService = inject(TranslationService);
 
   isLoading = signal(false);
 
@@ -72,7 +76,6 @@ export class ForgotPasswordPage {
           color: 'success'
         });
         await toast.present();
-        // Volver al login
         await this.router.navigate(['/auth/login']);
       },
       error: async (err) => {

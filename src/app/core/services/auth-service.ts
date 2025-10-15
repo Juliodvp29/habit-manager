@@ -13,16 +13,13 @@ export class AuthService {
   private apiService = inject(ApiService);
   private storageService = inject(StorageService);
 
-  // Signals
   private currentUserSignal = signal<User | null>(this.storageService.getUser());
   private tokenSignal = signal<string | null>(this.storageService.getToken());
 
-  // Computed
   public currentUser = computed(() => this.currentUserSignal());
   public token = computed(() => this.tokenSignal());
   public isAuthenticated = computed(() => !!this.tokenSignal());
 
-  // Auth endpoints
   register(data: RegisterRequest): Observable<AuthResponse> {
     return this.apiService.post<AuthResponse>('/auth/register', data);
   }

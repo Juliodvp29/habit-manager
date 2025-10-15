@@ -60,6 +60,7 @@
       "ERROR": "Código inválido o expirado"
     },
     "FORGOT_PASSWORD": {
+      "HEAD": "Recuperar contraseña",
       "TITLE": "¿Olvidaste tu contraseña?",
       "SUBTITLE": "Introduce tu correo y te enviaremos instrucciones para restablecerla.",
       "EMAIL": "Correo electrónico",

@@ -14,7 +14,9 @@ import {
   IonToolbar,
   ToastController
 } from '@ionic/angular/standalone';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/core/services/auth-service';
+import { TranslationService } from 'src/app/core/services/translation-service';
 
 @Component({
   selector: 'app-reset-password',
@@ -31,7 +33,8 @@ import { AuthService } from 'src/app/core/services/auth-service';
     IonItem,
     IonInput,
     IonButton,
-    RouterModule
+    RouterModule,
+    TranslateModule
   ]
 })
 export class ResetPasswordPage {
@@ -41,6 +44,8 @@ export class ResetPasswordPage {
   private toastController = inject(ToastController);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  public translationService = inject(TranslationService);  // ← Inyectar servicio
+
 
   isLoading = signal(false);
 

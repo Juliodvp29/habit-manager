@@ -13,9 +13,11 @@ import {
   IonToolbar,
   ToastController
 } from '@ionic/angular/standalone';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { mailOutline, refreshOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/core/services/auth-service';
+import { TranslationService } from 'src/app/core/services/translation-service';
 
 @Component({
   selector: 'app-verify-email',
@@ -30,7 +32,7 @@ import { AuthService } from 'src/app/core/services/auth-service';
     IonInput,
     IonButton,
     IonIcon,
-    ReactiveFormsModule]
+    ReactiveFormsModule, TranslateModule]
 })
 export class VerifyEmailPage implements OnInit {
 
@@ -38,6 +40,7 @@ export class VerifyEmailPage implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private toastController = inject(ToastController);
+  public translationService = inject(TranslationService);  // ← Inyectar servicio
 
   // Signals
   email = signal<string>('');

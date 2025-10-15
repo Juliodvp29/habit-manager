@@ -12,6 +12,7 @@ import {
   IonToolbar,
   ToastController, IonSpinner
 } from '@ionic/angular/standalone';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { keyOutline, shieldCheckmarkOutline, arrowBackOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/core/services/auth-service';
@@ -29,7 +30,8 @@ import { AuthService } from 'src/app/core/services/auth-service';
     IonInput,
     IonButton,
     IonIcon,
-    ReactiveFormsModule]
+    ReactiveFormsModule,
+    TranslateModule]
 })
 export class Verify2FaPage implements OnInit {
 

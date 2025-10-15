@@ -13,7 +13,6 @@ export class StorageService {
   private readonly THEME_KEY = 'habit_theme';
   private readonly LANGUAGE_KEY = 'habit_language';
 
-  // Token
   saveToken(token: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
   }
@@ -26,7 +25,6 @@ export class StorageService {
     localStorage.removeItem(this.TOKEN_KEY);
   }
 
-  // User
   saveUser(user: User): void {
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
   }
@@ -47,7 +45,6 @@ export class StorageService {
     localStorage.removeItem(this.USER_KEY);
   }
 
-  // Theme
   saveTheme(theme: 'light' | 'dark'): void {
     localStorage.setItem(this.THEME_KEY, theme);
   }
@@ -56,7 +53,6 @@ export class StorageService {
     return (localStorage.getItem(this.THEME_KEY) as 'light' | 'dark') || 'light';
   }
 
-  // Language
   saveLanguage(language: string): void {
     localStorage.setItem(this.LANGUAGE_KEY, language);
   }
@@ -65,7 +61,6 @@ export class StorageService {
     return localStorage.getItem(this.LANGUAGE_KEY) || 'es';
   }
 
-  // Clear all
   clearAll(): void {
     localStorage.clear();
   }

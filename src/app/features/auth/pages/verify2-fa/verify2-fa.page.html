@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border">
   <ion-toolbar class="px-4">
-    <ion-title class="text-neutral-900 dark:text-neutral-50">Verificación 2FA</ion-title>
+    <ion-title class="text-neutral-900 dark:text-neutral-50">{{ 'AUTH.VERIFY_2FA.TITLE' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -20,15 +20,16 @@
 
     <!-- Título y descripción -->
     <div class="text-center mb-10 max-w-md">
-      <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-4">Verificación de seguridad</h1>
+      <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-4">{{ 'AUTH.VERIFY_2FA.TITLE' | translate
+        }}</h1>
       <p class="text-neutral-600 dark:text-neutral-400 mb-3 text-sm leading-relaxed">
-        Hemos enviado un código de seguridad a
+        {{ 'AUTH.VERIFY_2FA.SUBTITLE' | translate }}
       </p>
       <div class="bg-neutral-100 dark:bg-neutral-800 rounded-xl px-4 py-3 mb-4">
         <p class="font-semibold text-neutral-900 dark:text-neutral-50">{{ email() }}</p>
       </div>
       <p class="text-xs text-neutral-500 dark:text-neutral-400">
-        Ingresa el código de 6 dígitos para completar tu inicio de sesión
+        {{ 'AUTH.VERIFY_2FA.DESCRIPTION' | translate }}
       </p>
     </div>
 
@@ -40,8 +41,9 @@
         <div class="mb-6">
           <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
             <ion-icon name="key-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
-            <ion-input formControlName="code" type="text" inputmode="numeric" label="Código de seguridad"
-              labelPlacement="floating" placeholder="123456" maxlength="6" [clearInput]="true"
+            <ion-input formControlName="code" type="text" inputmode="numeric"
+              [label]="'AUTH.VERIFY_2FA.CODE' | translate" labelPlacement="floating"
+              [placeholder]="'AUTH.VERIFY_2FA.CODE_PLACEHOLDER' | translate" maxlength="6" [clearInput]="true"
               class="text-neutral-900 dark:text-neutral-50 text-lg tracking-widest text-center font-semibold">
             </ion-input>
           </ion-item>
@@ -52,16 +54,16 @@
           class="mb-4 h-12 font-medium" shape="round">
           @if (isLoading()) {
           <ion-spinner name="crescent" class="mr-2"></ion-spinner>
-          Verificando...
+          {{ 'AUTH.VERIFY_2FA.LOADING' | translate }}
           } @else {
-          Verificar código
+          {{ 'AUTH.VERIFY_2FA.SUBMIT' | translate }}
           }
         </ion-button>
 
         <!-- Back Button -->
         <ion-button type="button" expand="block" fill="clear" (click)="goBack()" class="h-12 font-medium">
           <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
-          Volver al inicio de sesión
+          {{ 'AUTH.VERIFY_2FA.BACK' | translate }}
         </ion-button>
       </form>
     </div>

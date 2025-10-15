@@ -4,7 +4,6 @@ export function initializeTheme(): () => void {
     const savedTheme = localStorage.getItem(THEME_KEY);
     const isDark = savedTheme === 'dark';
 
-    // Aplicar tema al document inmediatamente
     if (isDark) {
       document.body.classList.add('dark');
       document.documentElement.classList.add('ion-palette-dark');
@@ -13,6 +12,5 @@ export function initializeTheme(): () => void {
       document.documentElement.classList.remove('ion-palette-dark');
     }
 
-    console.log('Theme initialized:', savedTheme || 'light (default)');
   };
 }

@@ -1,8 +1,8 @@
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular/standalone';
+import { catchError, throwError } from 'rxjs';
 import { StorageService } from '../services/storage-service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -10,7 +10,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const toastController = inject(ToastController);
 
-  // Agregar token si existe
   const token = storageService.getToken();
   if (token) {
     req = req.clone({

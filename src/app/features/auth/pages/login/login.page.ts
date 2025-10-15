@@ -40,9 +40,8 @@ export class LoginPage implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private toastController = inject(ToastController);
-  public translationService = inject(TranslationService);  // ← Inyectar servicio
+  public translationService = inject(TranslationService);
 
-  // Signals
   showPassword = signal<boolean>(false);
   isLoading = signal<boolean>(false);
 
@@ -86,7 +85,6 @@ export class LoginPage implements OnInit {
             }
           });
         } else if (response.token && response.user) {
-          // Sincronizar idioma del usuario si viene del backend
           if (response.user.preferredLanguage?.code) {
             this.translationService.syncWithUserPreference(response.user.preferredLanguage.code);
           }

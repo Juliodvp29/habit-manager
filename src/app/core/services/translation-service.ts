@@ -63,8 +63,6 @@ export class TranslationService {
     this.currentLanguage.set(lang);
     this.storageService.saveLanguage(lang);
 
-    // Opcional: cambiar dirección del texto si se añade árabe u otros idiomas RTL
-    // document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
   }
 
   public toggleLanguage(): void {
@@ -85,7 +83,6 @@ export class TranslationService {
     return ['es', 'en'].includes(lang);
   }
 
-  // Método para sincronizar con el idioma del usuario en el backend
   public syncWithUserPreference(userLangCode: string): void {
     if (userLangCode && this.isLanguageSupported(userLangCode as SupportedLanguage)) {
       this.setLanguage(userLangCode as SupportedLanguage);

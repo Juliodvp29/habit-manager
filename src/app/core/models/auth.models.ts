@@ -84,7 +84,6 @@ export interface AuthState {
   isLoading: boolean;
 }
 
-// Enums
 export enum AuthStep {
   LOGIN = 'login',
   REGISTER = 'register',
