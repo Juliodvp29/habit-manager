@@ -6,8 +6,10 @@ import {
   IonButton,
   IonContent,
   IonHeader,
+  IonIcon,
   IonInput,
   IonItem,
+  IonSpinner,
   IonTitle,
   IonToolbar,
   ToastController
@@ -21,7 +23,7 @@ import { TranslationService } from 'src/app/core/services/translation-service';
   templateUrl: './forgot-password.page.html',
   styleUrls: ['./forgot-password.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonIcon, IonSpinner,
     IonContent,
     IonHeader,
     IonTitle,

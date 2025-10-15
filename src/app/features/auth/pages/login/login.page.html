@@ -1,4 +1,4 @@
-<ion-content class="ion-padding">
+<ion-content class="ion-padding bg-white dark:bg-neutral-900">
   <div class="flex flex-col items-center justify-center min-h-full px-6 py-12">
 
     <!-- Logo y título -->
@@ -12,7 +12,7 @@
       <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
         {{ 'AUTH.LOGIN.TITLE' | translate }}
       </h1>
-      <p class="text-neutral-500 dark:text-neutral-400 text-sm">
+      <p class="text-neutral-600 dark:text-neutral-400 text-sm">
         {{ 'AUTH.LOGIN.SUBTITLE' | translate }}
       </p>
 
@@ -30,8 +30,9 @@
 
         <!-- Email -->
         <div class="mb-4">
-          <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-            <ion-icon name="mail-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
+          <ion-item lines="none"
+            class="rounded-xl border border-neutral-300 dark:border-neutral-700 overflow-hidden bg-white dark:bg-neutral-800">
+            <ion-icon name="mail-outline" slot="start" class="text-neutral-500 dark:text-neutral-400"></ion-icon>
             <ion-input formControlName="email" type="email" [label]="'AUTH.LOGIN.EMAIL' | translate"
               labelPlacement="floating" [placeholder]="'AUTH.LOGIN.EMAIL_PLACEHOLDER' | translate" [clearInput]="true"
               class="text-neutral-900 dark:text-neutral-50">
@@ -41,17 +42,16 @@
 
         <!-- Password -->
         <div class="mb-4">
-          <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-            <ion-icon name="lock-closed-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
+          <ion-item lines="none"
+            class="rounded-xl border border-neutral-300 dark:border-neutral-700 overflow-hidden bg-white dark:bg-neutral-800">
+            <ion-icon name="lock-closed-outline" slot="start" class="text-neutral-500 dark:text-neutral-400"></ion-icon>
             <ion-input formControlName="password" [type]="showPassword() ? 'text' : 'password'"
               [label]="'AUTH.LOGIN.PASSWORD' | translate" labelPlacement="floating"
               [placeholder]="'AUTH.LOGIN.PASSWORD_PLACEHOLDER' | translate"
               class="text-neutral-900 dark:text-neutral-50">
             </ion-input>
             <ion-icon [name]="showPassword() ? 'eye-outline' : 'eye-off-outline'" slot="end" (click)="togglePassword()"
-              class="cursor-pointer text-neutral-400 dark:text-neutral-500 hover:text-primary-500 transition-colors align-middle relative top-[2px]"></ion-icon>
-
-
+              class="cursor-pointer text-neutral-500 dark:text-neutral-400 hover:text-primary-500 transition-colors align-middle relative top-[2px]"></ion-icon>
           </ion-item>
         </div>
 
@@ -77,10 +77,10 @@
         <!-- Divider -->
         <div class="relative mb-6">
           <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-neutral-200 dark:border-neutral-800"></div>
+            <div class="w-full border-t border-neutral-300 dark:border-neutral-700"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-4 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400">
+            <span class="px-4 bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400">
               {{ 'AUTH.LOGIN.NO_ACCOUNT' | translate }}
             </span>
           </div>

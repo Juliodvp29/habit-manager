@@ -16,6 +16,8 @@ export class ThemeService {
 
     console.log('ThemeService initialized with theme:', currentTheme);
 
+    this.applyTheme();
+
     effect(() => {
       const theme = this.isDarkMode() ? 'dark' : 'light';
       this.storageService.saveTheme(theme);
@@ -35,16 +37,14 @@ export class ThemeService {
   private applyTheme(): void {
     const prefersDark = this.isDarkMode();
 
-    if (prefersDark) {
-      document.body.classList.add('dark');
-    } else {
-      document.body.classList.remove('dark');
-    }
+    document.body.classList.remove('dark');
+    document.documentElement.classList.remove('ion-palette-dark');
 
     if (prefersDark) {
+      document.body.classList.add('dark');
       document.documentElement.classList.add('ion-palette-dark');
-    } else {
-      document.documentElement.classList.remove('ion-palette-dark');
     }
+
+    console.log('Theme applied:', prefersDark ? 'dark' : 'light');
   }
 }

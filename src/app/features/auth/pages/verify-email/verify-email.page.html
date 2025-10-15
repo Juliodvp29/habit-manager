@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border">
+<ion-header class="ion-no-border bg-white dark:bg-neutral-900">
   <ion-toolbar class="px-4">
     <ion-title class="text-neutral-900 dark:text-neutral-50">
       {{ 'AUTH.VERIFY_EMAIL.TITLE' | translate }}
@@ -6,7 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="ion-padding bg-white dark:bg-neutral-900">
   <div class="flex flex-col items-center justify-center min-h-full px-6 py-12">
 
     <!-- Icono principal -->
@@ -44,8 +44,9 @@
 
         <!-- Código de verificación -->
         <div class="mb-6">
-          <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-            <ion-icon name="shield-checkmark-outline" slot="start" class="text-neutral-400 dark:text-neutral-500">
+          <ion-item lines="none"
+            class="rounded-xl border border-neutral-300 dark:border-neutral-700 overflow-hidden bg-white dark:bg-neutral-800">
+            <ion-icon name="shield-checkmark-outline" slot="start" class="text-neutral-500 dark:text-neutral-400">
             </ion-icon>
             <ion-input formControlName="code" type="text" inputmode="numeric"
               [label]="'AUTH.VERIFY_EMAIL.CODE' | translate" labelPlacement="floating"
@@ -68,7 +69,7 @@
 
         <!-- Botón reenviar -->
         <ion-button type="button" expand="block" fill="clear" [disabled]="isResending()" (click)="resendCode()"
-          class="h-12 font-medium">
+          class="h-12 font-medium text-neutral-700 dark:text-neutral-300">
           @if (isResending()) {
           <ion-spinner name="crescent" class="mr-2"></ion-spinner>
           {{ 'AUTH.VERIFY_EMAIL.RESENDING' | translate }}

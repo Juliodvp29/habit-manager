@@ -1,10 +1,10 @@
-<ion-header class="ion-no-border">
+<ion-header class="ion-no-border bg-white dark:bg-neutral-900">
   <ion-toolbar class="px-4">
     <ion-title class="text-neutral-900 dark:text-neutral-50">{{ 'AUTH.VERIFY_2FA.TITLE' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="ion-padding bg-white dark:bg-neutral-900">
   <div class="flex flex-col items-center justify-center min-h-full px-6 py-12">
 
     <!-- Icono con estilo moderno -->
@@ -39,8 +39,9 @@
 
         <!-- Código 2FA -->
         <div class="mb-6">
-          <ion-item lines="none" class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-            <ion-icon name="key-outline" slot="start" class="text-neutral-400 dark:text-neutral-500"></ion-icon>
+          <ion-item lines="none"
+            class="rounded-xl border border-neutral-300 dark:border-neutral-700 overflow-hidden bg-white dark:bg-neutral-800">
+            <ion-icon name="key-outline" slot="start" class="text-neutral-500 dark:text-neutral-400"></ion-icon>
             <ion-input formControlName="code" type="text" inputmode="numeric"
               [label]="'AUTH.VERIFY_2FA.CODE' | translate" labelPlacement="floating"
               [placeholder]="'AUTH.VERIFY_2FA.CODE_PLACEHOLDER' | translate" maxlength="6" [clearInput]="true"
@@ -61,7 +62,8 @@
         </ion-button>
 
         <!-- Back Button -->
-        <ion-button type="button" expand="block" fill="clear" (click)="goBack()" class="h-12 font-medium">
+        <ion-button type="button" expand="block" fill="clear" (click)="goBack()"
+          class="h-12 font-medium text-neutral-700 dark:text-neutral-300">
           <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
           {{ 'AUTH.VERIFY_2FA.BACK' | translate }}
         </ion-button>
