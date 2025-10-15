@@ -1,18 +1,271 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Perfil</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="px-4 bg-white dark:bg-neutral-900">
+    <ion-title class="text-neutral-900 dark:text-neutral-50">
+      {{ 'PROFILE.TITLE' | translate }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <div class="flex items-center justify-center h-full">
-    <div class="text-center">
-      <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
-        Perfil de Usuario
-      </h2>
-      <p class="text-neutral-600 dark:text-neutral-400">
-        Próximamente: configuración y preferencias
-      </p>
+<ion-content class="bg-neutral-50 dark:bg-neutral-950">
+  @if (isLoading()) {
+  <!-- Loading State -->
+  <div class="flex items-center justify-center py-20">
+    <ion-spinner name="crescent" class="w-12 h-12 text-primary-500"></ion-spinner>
+  </div>
+  } @else if (user()) {
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Profile Header Card -->
+    <div class="bg-gradient-to-br from-primary-500 to-secondary-500 px-6 pt-8 pb-20">
+      <div class="flex flex-col items-center">
+        <!-- Profile Picture -->
+        <div class="relative mb-4">
+          <ion-avatar class="w-24 h-24 border-4 border-white dark:border-neutral-900 shadow-lg">
+            @if (user()?.profilePicture) {
+            <img [src]="user()?.profilePicture" [alt]="user()?.fullName" />
+            } @else {
+            <div class="w-full h-full rounded-full bg-white dark:bg-neutral-800 flex items-center justify-center">
+              <span class="text-3xl font-bold text-primary-600 dark:text-primary-400">
+                {{ getUserInitials() }}
+              </span>
+            </div>
+
+            }
+          </ion-avatar>
+          <button (click)="selectProfilePicture()"
+            class="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-neutral-800 rounded-full flex items-center justify-center shadow-md border-2 border-primary-500">
+            <ion-icon name="camera-outline" class="text-primary-600 dark:text-primary-400"></ion-icon>
+          </button>
+        </div>
+
+        <!-- User Info -->
+        <h2 class="text-2xl font-bold text-white mb-1">{{ user()?.fullName }}</h2>
+        <p class="text-white/80 text-sm mb-1">{{ user()?.email }}</p>
+        @if (user()?.isEmailVerified) {
+        <div class="flex items-center gap-1 text-white/90 text-xs">
+          <ion-icon name="shield-checkmark-outline" class="text-sm"></ion-icon>
+          <span>{{ 'PROFILE.VERIFIED' | translate }}</span>
+        </div>
+        }
+        @if (getJoinedDate()) {
+        <p class="text-white/70 text-xs mt-2">
+          {{ 'PROFILE.MEMBER_SINCE' | translate }} {{ getJoinedDate() }}
+        </p>
+        }
+      </div>
+    </div>
+
+    <div class="px-4 -mt-12 pb-6">
+
+      <!-- Personal Information Card -->
+      <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm mb-4 overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+          <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+            {{ 'PROFILE.PERSONAL_INFO' | translate }}
+          </h3>
+          @if (!isEditingProfile()) {
+          <button (click)="toggleEditProfile()"
+            class="text-primary-600 dark:text-primary-400 flex items-center gap-1 text-sm font-medium">
+            <ion-icon name="pencil-outline" class="text-base"></ion-icon>
+            <span>{{ 'COMMON.EDIT' | translate }}</span>
+          </button>
+          }
+        </div>
+
+        <form [formGroup]="profileForm" class="p-4">
+          <!-- Full Name -->
+          <div class="mb-4">
+            <ion-item lines="none" class="rounded-xl overflow-hidden" [class.border]="isEditingProfile()"
+              [class.border-neutral-300]="isEditingProfile()" [class.dark:border-neutral-700]="isEditingProfile()">
+              <ion-icon name="person-outline" slot="start" class="text-neutral-500 dark:text-neutral-400"></ion-icon>
+              <ion-input formControlName="fullName" [label]="'PROFILE.FULL_NAME' | translate" labelPlacement="floating"
+                [readonly]="!isEditingProfile()" class="text-neutral-900 dark:text-neutral-50">
+              </ion-input>
+            </ion-item>
+          </div>
+
+          <!-- Email (readonly) -->
+          <div class="mb-4">
+            <ion-item lines="none" class="rounded-xl overflow-hidden bg-neutral-50 dark:bg-neutral-800">
+              <ion-icon name="mail-outline" slot="start" class="text-neutral-500 dark:text-neutral-400"></ion-icon>
+              <ion-input formControlName="email" [label]="'PROFILE.EMAIL' | translate" labelPlacement="floating"
+                class="text-neutral-900 dark:text-neutral-50">
+              </ion-input>
+            </ion-item>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-2 px-2">
+              {{ 'PROFILE.EMAIL_READONLY' | translate }}
+            </p>
+          </div>
+
+          @if (isEditingProfile()) {
+          <div class="flex gap-2 mt-4">
+            <ion-button expand="block" (click)="saveProfile()" [disabled]="profileForm.invalid || isSavingProfile()"
+              class="flex-1" shape="round">
+              @if (isSavingProfile()) {
+              <ion-spinner name="crescent" class="mr-2"></ion-spinner>
+              {{ 'COMMON.SAVING' | translate }}
+              } @else {
+              <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+              {{ 'COMMON.SAVE' | translate }}
+              }
+            </ion-button>
+            <ion-button expand="block" fill="outline" (click)="toggleEditProfile()" [disabled]="isSavingProfile()"
+              class="flex-1" shape="round">
+              <ion-icon name="close-outline" slot="start"></ion-icon>
+              {{ 'COMMON.CANCEL' | translate }}
+            </ion-button>
+          </div>
+          }
+        </form>
+      </div>
+
+      <!-- Settings Card -->
+      <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm mb-4 overflow-hidden">
+        <div class="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+          <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+            {{ 'PROFILE.PREFERENCES' | translate }}
+          </h3>
+        </div>
+
+        <ion-list class="bg-transparent">
+          <!-- Theme Toggle -->
+          <ion-item lines="full" class="bg-white dark:bg-neutral-900">
+            <ion-icon name="moon-outline" slot="start" class="text-neutral-700 dark:text-neutral-300"></ion-icon>
+            <ion-label>
+              <h3 class="text-neutral-900 dark:text-neutral-50 font-medium">{{ 'PROFILE.DARK_MODE' | translate }}</h3>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400">{{ 'PROFILE.DARK_MODE_DESC' | translate }}</p>
+            </ion-label>
+            <ion-toggle [checked]="isDarkMode()" (ionChange)="toggleTheme()" slot="end"></ion-toggle>
+          </ion-item>
+
+          <!-- Language Select -->
+          <ion-item lines="full" class="bg-white dark:bg-neutral-900">
+            <ion-icon name="language-outline" slot="start" class="text-neutral-700 dark:text-neutral-300"></ion-icon>
+            <ion-label>
+              <h3 class="text-neutral-900 dark:text-neutral-50 font-medium">{{ 'PROFILE.LANGUAGE' | translate }}</h3>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400">{{ 'PROFILE.LANGUAGE_DESC' | translate }}</p>
+            </ion-label>
+            <ion-select [value]="currentLanguage()" (ionChange)="changeLanguage($event)" interface="action-sheet"
+              slot="end" class="text-neutral-900 dark:text-neutral-50">
+              @for (lang of availableLanguages; track lang.code) {
+              <ion-select-option [value]="lang.code">
+                {{ lang.flag }} {{ lang.nativeName }}
+              </ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+
+          <!-- Notifications Toggle -->
+          @if (settings()) {
+          <ion-item lines="full" class="bg-white dark:bg-neutral-900">
+            <ion-icon name="notifications-outline" slot="start"
+              class="text-neutral-700 dark:text-neutral-300"></ion-icon>
+            <ion-label>
+              <h3 class="text-neutral-900 dark:text-neutral-50 font-medium">{{ 'PROFILE.NOTIFICATIONS' | translate }}
+              </h3>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400">{{ 'PROFILE.NOTIFICATIONS_DESC' | translate }}
+              </p>
+            </ion-label>
+            <ion-toggle [checked]="settings()?.notificationEnabled" (ionChange)="toggleNotifications($event)"
+              slot="end"></ion-toggle>
+          </ion-item>
+
+          <!-- Weekly Summary Toggle -->
+          <ion-item lines="none" class="bg-white dark:bg-neutral-900">
+            <ion-icon name="time-outline" slot="start" class="text-neutral-700 dark:text-neutral-300"></ion-icon>
+            <ion-label>
+              <h3 class="text-neutral-900 dark:text-neutral-50 font-medium">{{ 'PROFILE.WEEKLY_SUMMARY' | translate }}
+              </h3>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400">{{ 'PROFILE.WEEKLY_SUMMARY_DESC' | translate }}
+              </p>
+            </ion-label>
+            <ion-toggle [checked]="settings()?.weeklySummary" (ionChange)="toggleWeeklySummary($event)"
+              slot="end"></ion-toggle>
+          </ion-item>
+          }
+        </ion-list>
+      </div>
+
+      <!-- Security Card -->
+      <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm mb-4 overflow-hidden">
+        <div class="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+          <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+            {{ 'PROFILE.SECURITY' | translate }}
+          </h3>
+        </div>
+
+        <div class="p-4">
+          <button (click)="changePassword()"
+            class="w-full flex items-center gap-3 p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors">
+            <div
+              class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+              <ion-icon name="key-outline" class="text-xl text-primary-600 dark:text-primary-400"></ion-icon>
+            </div>
+            <div class="flex-1 text-left">
+              <p class="text-sm font-medium text-neutral-900 dark:text-neutral-50">
+                {{ 'PROFILE.CHANGE_PASSWORD' | translate }}
+              </p>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400">
+                {{ 'PROFILE.CHANGE_PASSWORD_DESC' | translate }}
+              </p>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="text-neutral-400"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions Card -->
+      <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm mb-4 overflow-hidden">
+        <div class="p-4 space-y-3">
+          <!-- Logout Button -->
+          <button (click)="confirmLogout()"
+            class="w-full flex items-center gap-3 p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors">
+            <div
+              class="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+              <ion-icon name="log-out-outline" class="text-xl text-amber-600 dark:text-amber-400"></ion-icon>
+            </div>
+            <div class="flex-1 text-left">
+              <p class="text-sm font-medium text-neutral-900 dark:text-neutral-50">
+                {{ 'PROFILE.LOGOUT' | translate }}
+              </p>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400">
+                {{ 'PROFILE.LOGOUT_DESC' | translate }}
+              </p>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="text-neutral-400"></ion-icon>
+          </button>
+
+          <!-- Delete Account Button -->
+          <button (click)="confirmDeleteAccount()"
+            class="w-full flex items-center gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+            <div
+              class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center flex-shrink-0">
+              <ion-icon name="trash-outline" class="text-xl text-red-600 dark:text-red-400"></ion-icon>
+            </div>
+            <div class="flex-1 text-left">
+              <p class="text-sm font-medium text-red-600 dark:text-red-400">
+                {{ 'PROFILE.DELETE_ACCOUNT' | translate }}
+              </p>
+              <p class="text-xs text-red-500 dark:text-red-400/80">
+                {{ 'PROFILE.DELETE_ACCOUNT_DESC' | translate }}
+              </p>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="text-red-400"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- App Info -->
+      <div class="text-center py-6">
+        <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-1">
+          Habit Manager v1.0.0
+        </p>
+        <p class="text-xs text-neutral-400 dark:text-neutral-500">
+          {{ 'PROFILE.MADE_WITH' | translate }} ❤️
+        </p>
+      </div>
+
     </div>
   </div>
+  }
 </ion-content>

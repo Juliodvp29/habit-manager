@@ -35,6 +35,8 @@ export interface AuthResponse {
   email?: string;
   emailSent?: boolean;
   requiresVerification?: boolean;
+  reason?: string;
+  refreshToken?: string;
 }
 
 export interface LoginRequest {

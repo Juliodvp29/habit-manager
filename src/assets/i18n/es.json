@@ -13,7 +13,8 @@
       "NO_ACCOUNT": "¿No tienes cuenta?",
       "CREATE_ACCOUNT": "Crear cuenta nueva",
       "SUCCESS": "¡Bienvenido de nuevo!",
-      "ERROR": "Error al iniciar sesión"
+      "ERROR": "Error al iniciar sesión",
+      "VERIFY_2FA": "Se requiere verificación adicional por seguridad"
     },
     "REGISTER": {
       "TITLE": "Crear cuenta",
@@ -106,6 +107,41 @@
       "WEEKLY": "Semanal",
       "MONTHLY": "Mensual"
     }
+  },
+  "PROFILE": {
+    "TITLE": "Perfil",
+    "VERIFIED": "Verificado",
+    "MEMBER_SINCE": "Miembro desde",
+    "PERSONAL_INFO": "Información Personal",
+    "FULL_NAME": "Nombre completo",
+    "EMAIL": "Correo electrónico",
+    "EMAIL_READONLY": "El correo no puede ser modificado",
+    "PREFERENCES": "Preferencias",
+    "DARK_MODE": "Modo oscuro",
+    "DARK_MODE_DESC": "Alterna entre tema claro y oscuro",
+    "LANGUAGE": "Idioma",
+    "LANGUAGE_DESC": "Elige tu idioma preferido",
+    "LANGUAGE_CHANGED": "Idioma cambiado correctamente",
+    "NOTIFICATIONS": "Notificaciones",
+    "NOTIFICATIONS_DESC": "Recibe recordatorios y actualizaciones",
+    "WEEKLY_SUMMARY": "Resumen semanal",
+    "WEEKLY_SUMMARY_DESC": "Obtén un reporte semanal de tu progreso",
+    "SECURITY": "Seguridad",
+    "CHANGE_PASSWORD": "Cambiar contraseña",
+    "CHANGE_PASSWORD_DESC": "Actualiza la contraseña de tu cuenta",
+    "CHANGE_PASSWORD_MESSAGE": "Serás redirigido para restablecer tu contraseña",
+    "CHANGE_PICTURE": "Cambiar foto de perfil",
+    "TAKE_PHOTO": "Tomar foto",
+    "CHOOSE_FROM_GALLERY": "Elegir de la galería",
+    "LOGOUT": "Cerrar sesión",
+    "LOGOUT_DESC": "Cierra tu sesión actual",
+    "LOGOUT_CONFIRM": "¿Cerrar sesión?",
+    "LOGOUT_MESSAGE": "¿Estás seguro que deseas cerrar sesión?",
+    "DELETE_ACCOUNT": "Eliminar cuenta",
+    "DELETE_ACCOUNT_DESC": "Elimina permanentemente tu cuenta y datos",
+    "DELETE_ACCOUNT_WARNING": "Esta acción no se puede deshacer. Todos tus datos serán eliminados permanentemente. Escribe 'eliminar' para confirmar.",
+    "TYPE_DELETE": "Escribe 'eliminar' para confirmar",
+    "MADE_WITH": "Hecho con"
   },
   "COMMON": {
     "YES": "Sí",

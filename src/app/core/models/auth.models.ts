@@ -2,7 +2,7 @@ export interface User {
   id: number;
   email: string;
   fullName: string;
-  profilePicture?: string;
+  profilePicture?: string | null;
   isEmailVerified: boolean;
   preferredLanguage?: Language;
   createdAt?: string;
@@ -21,12 +21,14 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  requires2FA: boolean;
+  requires2FA?: boolean;
   message: string;
   userId?: number;
   email?: string;
   user?: User;
-  token?: string;
+  accessToken?: string;      // ← NUEVO
+  refreshToken?: string;     // ← NUEVO
+  token?: string;            // Mantener por compatibilidad
 }
 
 export interface RegisterRequest {
@@ -49,7 +51,9 @@ export interface Verify2FARequest {
 
 export interface Verify2FAResponse {
   user: User;
-  token: string;
+  accessToken: string;       // ← NUEVO
+  refreshToken: string;      // ← NUEVO
+  token?: string;            // Mantener por compatibilidad
   message: string;
 }
 
@@ -80,6 +84,7 @@ export interface ResetPasswordRequest {
 export interface AuthState {
   user: User | null;
   token: string | null;
+  refreshToken: string | null;   // ← NUEVO
   isAuthenticated: boolean;
   isLoading: boolean;
 }

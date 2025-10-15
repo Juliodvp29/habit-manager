@@ -13,7 +13,8 @@
       "NO_ACCOUNT": "Don't have an account?",
       "CREATE_ACCOUNT": "Create a new account",
       "SUCCESS": "Welcome back!",
-      "ERROR": "Error signing in"
+      "ERROR": "Error signing in",
+      "VERIFY_2FA": "Additional verification required for security"
     },
     "REGISTER": {
       "TITLE": "Create account",
@@ -106,6 +107,41 @@
       "WEEKLY": "Weekly",
       "MONTHLY": "Monthly"
     }
+  },
+  "PROFILE": {
+    "TITLE": "Profile",
+    "VERIFIED": "Verified",
+    "MEMBER_SINCE": "Member since",
+    "PERSONAL_INFO": "Personal Information",
+    "FULL_NAME": "Full name",
+    "EMAIL": "Email",
+    "EMAIL_READONLY": "Email cannot be modified",
+    "PREFERENCES": "Preferences",
+    "DARK_MODE": "Dark mode",
+    "DARK_MODE_DESC": "Toggle between light and dark themes",
+    "LANGUAGE": "Language",
+    "LANGUAGE_DESC": "Choose your preferred language",
+    "LANGUAGE_CHANGED": "Language changed successfully",
+    "NOTIFICATIONS": "Notifications",
+    "NOTIFICATIONS_DESC": "Receive reminders and updates",
+    "WEEKLY_SUMMARY": "Weekly summary",
+    "WEEKLY_SUMMARY_DESC": "Get a weekly report of your progress",
+    "SECURITY": "Security",
+    "CHANGE_PASSWORD": "Change password",
+    "CHANGE_PASSWORD_DESC": "Update your account password",
+    "CHANGE_PASSWORD_MESSAGE": "You will be redirected to reset your password",
+    "CHANGE_PICTURE": "Change profile picture",
+    "TAKE_PHOTO": "Take photo",
+    "CHOOSE_FROM_GALLERY": "Choose from gallery",
+    "LOGOUT": "Log out",
+    "LOGOUT_DESC": "End your current session",
+    "LOGOUT_CONFIRM": "Log out?",
+    "LOGOUT_MESSAGE": "Are you sure you want to log out?",
+    "DELETE_ACCOUNT": "Delete account",
+    "DELETE_ACCOUNT_DESC": "Permanently delete your account and data",
+    "DELETE_ACCOUNT_WARNING": "This action cannot be undone. All your data will be permanently deleted. Type 'delete' to confirm.",
+    "TYPE_DELETE": "Type 'delete' to confirm",
+    "MADE_WITH": "Made with"
   },
   "COMMON": {
     "YES": "Yes",
