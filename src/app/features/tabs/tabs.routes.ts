@@ -13,7 +13,7 @@ export const TABS_ROUTES: Routes = [
       },
       {
         path: 'habits',
-        loadComponent: () => import('./pages/habits/habits.page').then(m => m.HabitsPage)
+        loadChildren: () => import('./pages/habits/habits.routes').then(m => m.HABITS_ROUTES)
       },
       {
         path: 'stats',
