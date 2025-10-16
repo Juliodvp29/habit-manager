@@ -4,6 +4,7 @@ ion-segment {
 }
 
 ion-segment-button {
+  --background: transparent;
   --color: var(--ion-color-step-600);
   --color-checked: var(--ion-color-primary);
   --indicator-height: 3px;

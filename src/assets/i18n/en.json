@@ -130,9 +130,6 @@
     "CHANGE_PASSWORD": "Change password",
     "CHANGE_PASSWORD_DESC": "Update your account password",
     "CHANGE_PASSWORD_MESSAGE": "You will be redirected to reset your password",
-    "CHANGE_PICTURE": "Change profile picture",
-    "TAKE_PHOTO": "Take photo",
-    "CHOOSE_FROM_GALLERY": "Choose from gallery",
     "LOGOUT": "Log out",
     "LOGOUT_DESC": "End your current session",
     "LOGOUT_CONFIRM": "Log out?",
@@ -141,7 +138,15 @@
     "DELETE_ACCOUNT_DESC": "Permanently delete your account and data",
     "DELETE_ACCOUNT_WARNING": "This action cannot be undone. All your data will be permanently deleted. Type 'delete' to confirm.",
     "TYPE_DELETE": "Type 'delete' to confirm",
-    "MADE_WITH": "Made with"
+    "MADE_WITH": "Made with",
+    "CHANGE_PICTURE": "Change profile picture",
+    "TAKE_PHOTO": "Take photo",
+    "CHOOSE_FROM_GALLERY": "Choose from gallery",
+    "UPLOADING_PHOTO": "Uploading photo...",
+    "PHOTO_UPDATED": "Profile picture updated",
+    "PHOTO_ERROR": "Error updating photo",
+    "PROCESSING_PHOTO": "Processing photo...",
+    "NO_PHOTO_SELECTED": "No photo selected"
   },
   "COMMON": {
     "YES": "Yes",

@@ -75,7 +75,14 @@ Thumbs.db
 /config/firebase-admin-sdk.json
 **/GoogleService-Info.plist
 **/google-services.json
+.firebase/
+firebase-debug.log
+firestore-debug.log
 
+# Capacitor
+/android/
+/ios/
+capacitor.config.ts.backup
 # Build artifacts
 /platforms/
 /plugins/

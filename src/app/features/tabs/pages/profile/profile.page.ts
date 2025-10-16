@@ -1,3 +1,4 @@
+// src/app/features/tabs/pages/profile/profile.page.ts
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -20,6 +21,7 @@ import {
   IonTitle,
   IonToggle,
   IonToolbar,
+  LoadingController,
   ToastController
 } from '@ionic/angular/standalone';
 import { TranslateModule } from '@ngx-translate/core';
@@ -45,6 +47,7 @@ import {
 import { User, UserSettings } from 'src/app/core/models/user.model';
 import { AuthService } from 'src/app/core/services/auth-service';
 import { FcmNotificationService } from 'src/app/core/services/fcm-notification-service';
+import { PhotoService } from 'src/app/core/services/photo-service';
 import { ThemeService } from 'src/app/core/services/theme-service';
 import { TranslationService } from 'src/app/core/services/translation-service';
 import { UserService } from 'src/app/core/services/user-service';
@@ -79,11 +82,13 @@ export class ProfilePage implements OnInit {
   private userService = inject(UserService);
   private themeService = inject(ThemeService);
   private translationService = inject(TranslationService);
+  private photoService = inject(PhotoService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private alertController = inject(AlertController);
   private toastController = inject(ToastController);
   private actionSheetController = inject(ActionSheetController);
+  private loadingController = inject(LoadingController);
 
   // Signals
   user = signal<User | null>(null);
@@ -92,6 +97,7 @@ export class ProfilePage implements OnInit {
   isEditingProfile = signal(false);
   isSavingProfile = signal(false);
   isSavingSettings = signal(false);
+  isUploadingPhoto = signal(false);
 
   // Forms
   profileForm: FormGroup;
@@ -270,14 +276,14 @@ export class ProfilePage implements OnInit {
           text: this.translationService.translate('PROFILE.TAKE_PHOTO'),
           icon: 'camera-outline',
           handler: () => {
-            this.showToast('Funcionalidad de cámara próximamente', 'warning');
+            this.takePhoto();
           }
         },
         {
           text: this.translationService.translate('PROFILE.CHOOSE_FROM_GALLERY'),
           icon: 'images-outline',
           handler: () => {
-            this.showToast('Funcionalidad de galería próximamente', 'warning');
+            this.selectFromGallery();
           }
         },
         {
@@ -288,6 +294,110 @@ export class ProfilePage implements OnInit {
       ]
     });
     await actionSheet.present();
+  }
+
+  /**
+   * Tomar foto con la cámara
+   */
+  async takePhoto() {
+    const loading = await this.loadingController.create({
+      message: 'Procesando foto...',
+    });
+
+    try {
+      const base64Image = await this.photoService.takePhoto();
+
+      if (!base64Image) {
+        this.showToast('No se pudo obtener la foto', 'warning');
+        return;
+      }
+
+      await loading.present();
+      await this.uploadAndUpdatePhoto(base64Image);
+      await loading.dismiss();
+    } catch (error) {
+      await loading.dismiss();
+      console.error('Error tomando foto:', error);
+      this.showToast('Error al tomar la foto', 'danger');
+    }
+  }
+
+  /**
+   * Seleccionar foto de la galería
+   */
+  async selectFromGallery() {
+    const loading = await this.loadingController.create({
+      message: 'Procesando foto...',
+    });
+
+    try {
+      const base64Image = await this.photoService.selectFromGallery();
+
+      if (!base64Image) {
+        this.showToast('No se seleccionó ninguna foto', 'warning');
+        return;
+      }
+
+      await loading.present();
+      await this.uploadAndUpdatePhoto(base64Image);
+      await loading.dismiss();
+    } catch (error) {
+      await loading.dismiss();
+      console.error('Error seleccionando foto:', error);
+      this.showToast('Error al seleccionar la foto', 'danger');
+    }
+  }
+
+  /**
+   * Subir foto a Firebase y actualizar perfil
+   */
+  private async uploadAndUpdatePhoto(base64Image: string) {
+    try {
+      const currentUser = this.user();
+      if (!currentUser) {
+        throw new Error('Usuario no encontrado');
+      }
+
+      this.isUploadingPhoto.set(true);
+
+      // 1. Subir foto a Firebase Storage
+      console.log('📤 Subiendo foto a Firebase...');
+      const downloadURL = await this.photoService.uploadProfilePhoto(
+        base64Image,
+        currentUser.id
+      );
+
+      // 2. Actualizar perfil en el backend con la nueva URL
+      console.log('💾 Actualizando perfil con nueva foto...');
+      this.userService.updateProfile({
+        profilePicture: downloadURL
+      }).subscribe({
+        next: (updatedUser) => {
+          // 3. Eliminar foto anterior de Firebase (si existe)
+          if (currentUser.profilePicture) {
+            this.photoService.deleteProfilePhoto(currentUser.profilePicture);
+          }
+
+          // 4. Actualizar estado local
+          this.user.set(updatedUser);
+          this.isUploadingPhoto.set(false);
+
+          this.showToast(
+            'Foto de perfil actualizada exitosamente',
+            'success'
+          );
+        },
+        error: (error) => {
+          this.isUploadingPhoto.set(false);
+          console.error('Error actualizando perfil:', error);
+          this.showToast('Error al actualizar la foto', 'danger');
+        }
+      });
+    } catch (error) {
+      this.isUploadingPhoto.set(false);
+      console.error('Error en uploadAndUpdatePhoto:', error);
+      this.showToast('Error al procesar la foto', 'danger');
+    }
   }
 
   async changePassword() {
@@ -331,8 +441,6 @@ export class ProfilePage implements OnInit {
     await alert.present();
   }
 
-
-
   async logout() {
     const fcmService = inject(FcmNotificationService);
 
@@ -367,6 +475,7 @@ export class ProfilePage implements OnInit {
       );
     }
   }
+
   async confirmDeleteAccount() {
     const alert = await this.alertController.create({
       header: this.translationService.translate('PROFILE.DELETE_ACCOUNT'),
@@ -456,5 +565,4 @@ export class ProfilePage implements OnInit {
     });
     await toast.present();
   }
-
 }

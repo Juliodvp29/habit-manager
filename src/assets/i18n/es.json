@@ -130,9 +130,6 @@
     "CHANGE_PASSWORD": "Cambiar contraseña",
     "CHANGE_PASSWORD_DESC": "Actualiza la contraseña de tu cuenta",
     "CHANGE_PASSWORD_MESSAGE": "Serás redirigido para restablecer tu contraseña",
-    "CHANGE_PICTURE": "Cambiar foto de perfil",
-    "TAKE_PHOTO": "Tomar foto",
-    "CHOOSE_FROM_GALLERY": "Elegir de la galería",
     "LOGOUT": "Cerrar sesión",
     "LOGOUT_DESC": "Cierra tu sesión actual",
     "LOGOUT_CONFIRM": "¿Cerrar sesión?",
@@ -141,7 +138,15 @@
     "DELETE_ACCOUNT_DESC": "Elimina permanentemente tu cuenta y datos",
     "DELETE_ACCOUNT_WARNING": "Esta acción no se puede deshacer. Todos tus datos serán eliminados permanentemente. Escribe 'eliminar' para confirmar.",
     "TYPE_DELETE": "Escribe 'eliminar' para confirmar",
-    "MADE_WITH": "Hecho con"
+    "MADE_WITH": "Hecho con",
+    "CHANGE_PICTURE": "Cambiar foto de perfil",
+    "TAKE_PHOTO": "Tomar foto",
+    "CHOOSE_FROM_GALLERY": "Elegir de la galería",
+    "UPLOADING_PHOTO": "Subiendo foto...",
+    "PHOTO_UPDATED": "Foto de perfil actualizada",
+    "PHOTO_ERROR": "Error al actualizar la foto",
+    "PROCESSING_PHOTO": "Procesando foto...",
+    "NO_PHOTO_SELECTED": "No se seleccionó ninguna foto"
   },
   "COMMON": {
     "YES": "Sí",
