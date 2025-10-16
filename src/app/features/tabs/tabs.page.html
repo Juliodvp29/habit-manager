@@ -16,12 +16,12 @@
     </ion-tab-button>
 
     <!-- Botón de notificaciones con badge -->
-    <ion-tab-button routerLink="/notifications" routerLinkActive="active" class="relative">
+    <ion-tab-button tab="notifications">
       <ion-icon name="notifications-outline"></ion-icon>
       <ion-label>Notificaciones</ion-label>
       <!-- Badge de no leídas -->
       @if (unreadNotificationCount() > 0) {
-      <ion-badge class="absolute top-0 right-0 transform translate-x-1 -translate-y-1 bg-red-500 text-white text-xs">
+      <ion-badge class="absolute top-1 right-1 bg-red-500 text-white text-xs">
         {{ unreadNotificationCount() }}
       </ion-badge>
       }

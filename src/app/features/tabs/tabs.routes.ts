@@ -20,6 +20,10 @@ export const TABS_ROUTES: Routes = [
         loadComponent: () => import('./pages/stats/stats.page').then(m => m.StatsPage)
       },
       {
+        path: 'notifications',
+        loadComponent: () => import('./pages/notifications/notifications.page').then(m => m.NotificationsPage)
+      },
+      {
         path: 'profile',
         loadComponent: () => import('./pages/profile/profile.page').then(m => m.ProfilePage)
       }

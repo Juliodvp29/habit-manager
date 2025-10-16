@@ -17,11 +17,6 @@ export const routes: Routes = [
     loadChildren: () => import('./features/tabs/tabs.routes').then(m => m.TABS_ROUTES)
   },
   {
-    path: 'notifications',
-    canActivate: [AuthGuard],
-    loadComponent: () => import('./features/notifications/notifications.page').then(m => m.NotificationsPage)
-  },
-  {
     path: '**',
     redirectTo: 'tabs'
   }
