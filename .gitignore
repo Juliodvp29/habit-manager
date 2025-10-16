@@ -68,3 +68,17 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+
+
+# Firebase
+/config/firebase-admin-sdk.json
+**/GoogleService-Info.plist
+**/google-services.json
+
+# Build artifacts
+/platforms/
+/plugins/
+/www/
+*.apk
+*.ipa

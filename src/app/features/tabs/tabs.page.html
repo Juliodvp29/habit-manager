@@ -15,6 +15,18 @@
       <ion-label>Estadísticas</ion-label>
     </ion-tab-button>
 
+    <!-- Botón de notificaciones con badge -->
+    <ion-tab-button routerLink="/notifications" routerLinkActive="active" class="relative">
+      <ion-icon name="notifications-outline"></ion-icon>
+      <ion-label>Notificaciones</ion-label>
+      <!-- Badge de no leídas -->
+      @if (unreadNotificationCount() > 0) {
+      <ion-badge class="absolute top-0 right-0 transform translate-x-1 -translate-y-1 bg-red-500 text-white text-xs">
+        {{ unreadNotificationCount() }}
+      </ion-badge>
+      }
+    </ion-tab-button>
+
     <ion-tab-button tab="profile">
       <ion-icon name="person-outline"></ion-icon>
       <ion-label>Perfil</ion-label>

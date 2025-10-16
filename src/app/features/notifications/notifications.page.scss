@@ -1,0 +1,56 @@
+ion-segment {
+  --background: transparent;
+  --indicator-color: var(--ion-color-primary);
+}
+
+ion-segment-button {
+  --color: var(--ion-color-step-600);
+  --color-checked: var(--ion-color-primary);
+  --indicator-height: 3px;
+}
+
+ion-item-sliding {
+  ion-item {
+    --padding-start: 0;
+    --padding-end: 0;
+
+    &.active {
+      --background: var(--ion-color-light);
+    }
+  }
+}
+
+/* Animation para badge de notificaciones */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+ion-badge {
+  animation: pulse 2s infinite;
+}
+
+/* Estilos para el indicador de no leído */
+ion-item {
+  &.unread {
+    --background: rgba(11, 135, 235, 0.05);
+  }
+}
+
+/* Smooth transitions */
+ion-item,
+ion-button {
+  transition: all 0.3s ease;
+}

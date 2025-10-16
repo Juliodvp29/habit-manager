@@ -27,6 +27,7 @@ import {
   mailOutline,
 } from 'ionicons/icons';
 import { AuthService } from 'src/app/core/services/auth-service';
+import { FcmNotificationService } from 'src/app/core/services/fcm-notification-service';
 import { StorageService } from 'src/app/core/services/storage-service';
 import { TranslationService } from 'src/app/core/services/translation-service';
 
@@ -55,11 +56,13 @@ export class LoginPage implements OnInit {
   private router = inject(Router);
   private toastController = inject(ToastController);
   public translationService = inject(TranslationService);
+  private fcmService = inject(FcmNotificationService);
 
   showPassword = signal<boolean>(false);
   isLoading = signal<boolean>(false);
 
   loginForm: FormGroup;
+
 
   constructor() {
     addIcons({
@@ -82,6 +85,8 @@ export class LoginPage implements OnInit {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/tabs']);
     }
+
+    this.fcmService.loadNotifications();
   }
 
   togglePassword() {
@@ -133,6 +138,8 @@ export class LoginPage implements OnInit {
             );
           }
 
+          this.registerFcmToken();
+
           await this.showToast(
             this.translationService.translate('AUTH.LOGIN.SUCCESS'),
             'success',
@@ -181,6 +188,29 @@ export class LoginPage implements OnInit {
       },
     });
   }
+
+
+  /**
+ * Registrar token FCM después de login
+ */
+  private registerFcmToken(): void {
+
+    // Esperar a que Capacitor proporcione el token
+    setTimeout(() => {
+      // El token ya debe estar registrado por el servicio de FCM
+      // Si es necesario registrarlo manualmente:
+      if ('PushNotifications' in window) {
+        (window as any).PushNotifications.getToken().then((token: any) => {
+          console.log('📱 Registrando token FCM:', token.value);
+          this.fcmService.registerFcmToken(token.value).subscribe({
+            next: () => console.log('✅ Token FCM registrado'),
+            error: (err) => console.error('❌ Error registrando token:', err)
+          });
+        });
+      }
+    }, 1000);
+  }
+
 
   private async showToast(message: string, color: string) {
     const toast = await this.toastController.create({

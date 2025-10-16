@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 export interface ApiRequestOptions {
   headers?: HttpHeaders | { [header: string]: string | string[] };
   params?: HttpParams | { [param: string]: string | string[] };
+  body?: any;
 }
 
 

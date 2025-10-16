@@ -44,6 +44,7 @@ import {
 } from 'ionicons/icons';
 import { User, UserSettings } from 'src/app/core/models/user.model';
 import { AuthService } from 'src/app/core/services/auth-service';
+import { FcmNotificationService } from 'src/app/core/services/fcm-notification-service';
 import { ThemeService } from 'src/app/core/services/theme-service';
 import { TranslationService } from 'src/app/core/services/translation-service';
 import { UserService } from 'src/app/core/services/user-service';
@@ -330,15 +331,42 @@ export class ProfilePage implements OnInit {
     await alert.present();
   }
 
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/auth/login']);
-    this.showToast(
-      this.translationService.translate('COMMON.SUCCESS'),
-      'success'
-    );
-  }
 
+
+  async logout() {
+    const fcmService = inject(FcmNotificationService);
+
+    // ✅ NUEVO: Desregistrar token FCM antes de logout
+    if ('PushNotifications' in window) {
+      (window as any).PushNotifications.getToken().then((token: any) => {
+        fcmService.unregisterFcmToken(token.value).subscribe({
+          next: () => {
+            console.log('✅ Token FCM desregistrado');
+            // Proceder con logout
+            this.authService.logout();
+            this.router.navigate(['/auth/login']);
+          },
+          error: (err) => {
+            console.error('⚠️ Error desregistrando token:', err);
+            // Aún así hacer logout localmente
+            this.authService.logout();
+            this.router.navigate(['/auth/login']);
+            this.showToast(
+              this.translationService.translate('COMMON.SUCCESS'),
+              'success'
+            );
+          }
+        });
+      });
+    } else {
+      this.authService.logout();
+      this.router.navigate(['/auth/login']);
+      this.showToast(
+        this.translationService.translate('COMMON.SUCCESS'),
+        'success'
+      );
+    }
+  }
   async confirmDeleteAccount() {
     const alert = await this.alertController.create({
       header: this.translationService.translate('PROFILE.DELETE_ACCOUNT'),

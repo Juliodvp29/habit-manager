@@ -1,4 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {
@@ -42,6 +43,8 @@ export class AuthService {
   public refreshToken = computed(() => this.refreshTokenSignal());
   public isAuthenticated = computed(() => !!this.tokenSignal());
   public isLoading = computed(() => this.isLoadingSignal());
+
+  public isAuthenticated$ = toObservable(this.isAuthenticated);
 
   // ========================================
   // REGISTRO
