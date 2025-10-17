@@ -16,6 +16,11 @@ export interface ApiRequestOptions {
 })
 export class ApiService {
 
+  constructor() {
+    console.log('🌐 API BASE URL:', this.baseUrl);
+  }
+
+
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
