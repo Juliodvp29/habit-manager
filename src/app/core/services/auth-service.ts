@@ -221,7 +221,7 @@ export class AuthService {
   /**
    * Establecer sesión: guardar tokens y usuario
    */
-  private setSession(token: string, refreshToken: string, user: User): void {
+  public setSession(token: string, refreshToken: string, user: User): void {
     this.storageService.saveToken(token);
     this.storageService.saveRefreshToken(refreshToken);
     this.storageService.saveUser(user);

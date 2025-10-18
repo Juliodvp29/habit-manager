@@ -126,12 +126,12 @@ export class LoginPage implements OnInit {
         else if (response.accessToken && response.user) {
           console.log('✅ Login exitoso, guardando tokens...');
 
-          // Guardar AMBOS tokens
-          this.storageService.saveToken(response.accessToken);
-          if (response.refreshToken) {
-            this.storageService.saveRefreshToken(response.refreshToken);
-          }
-          this.storageService.saveUser(response.user);
+          // Usar setSession para actualizar signals correctamente
+          this.authService.setSession(
+            response.accessToken,
+            response.refreshToken || '',
+            response.user
+          );
 
           // Sincronizar idioma si es necesario
           if (response.user.preferredLanguage?.code) {
@@ -156,8 +156,12 @@ export class LoginPage implements OnInit {
         else if (response.token && response.user) {
           console.warn('⚠️ Usando formato antiguo de token');
 
-          this.storageService.saveToken(response.token);
-          this.storageService.saveUser(response.user);
+          // Usar setSession para formato antiguo (sin refresh token)
+          this.authService.setSession(
+            response.token,
+            '', // Sin refresh token en formato antiguo
+            response.user
+          );
 
           if (response.user.preferredLanguage?.code) {
             this.translationService.syncWithUserPreference(
@@ -196,6 +200,9 @@ export class LoginPage implements OnInit {
   * Registrar token FCM después de login
   */
 
+  /**
+ * Registrar token FCM después de login
+ */
   private async registerFcmToken(): Promise<void> {
     console.log('🔄 Iniciando registro de token FCM...');
 
@@ -205,17 +212,23 @@ export class LoginPage implements OnInit {
     }
 
     try {
-      // Usar el método correcto de Capacitor Firebase Messaging
-      const CapacitorFirebaseMessaging = (window as any).CapacitorFirebaseMessaging;
+      // ✅ CORRECTO: Importar el plugin directamente
+      const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
 
-      if (!CapacitorFirebaseMessaging) {
-        console.warn('⚠️ CapacitorFirebaseMessaging no disponible');
+      console.log('✅ Plugin FCM importado correctamente');
+
+      // Solicitar permisos primero
+      const permResult = await FirebaseMessaging.requestPermissions();
+      console.log('📱 Permisos FCM:', permResult);
+
+      if (permResult.receive !== 'granted') {
+        console.warn('⚠️ Permisos de notificaciones denegados');
         return;
       }
 
-      // Esperar a obtener el token
-      const result = await CapacitorFirebaseMessaging.getToken();
-      const fcmToken = result?.token || result?.value;
+      // Obtener el token
+      const result = await FirebaseMessaging.getToken();
+      const fcmToken = result?.token;
 
       if (fcmToken) {
         console.log('📱 FCM Token obtenido:', fcmToken);
@@ -234,6 +247,7 @@ export class LoginPage implements OnInit {
       }
     } catch (error) {
       console.error('❌ Error en registerFcmToken:', error);
+      console.error('Detalles del error:', JSON.stringify(error));
     }
   }
 

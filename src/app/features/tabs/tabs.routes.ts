@@ -8,6 +8,11 @@ export const TABS_ROUTES: Routes = [
     loadComponent: () => import('./tabs.page').then(m => m.TabsPage),
     children: [
       {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
         path: 'dashboard',
         loadComponent: () => import('./pages/dashboard/dashboard.page').then(m => m.DashboardPage)
       },

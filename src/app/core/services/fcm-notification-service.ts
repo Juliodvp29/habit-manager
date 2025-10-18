@@ -97,19 +97,14 @@ export class FcmNotificationService {
         return;
       }
 
-      // Verificar que el plugin está disponible
-      const FirebaseMessaging = (window as any).CapacitorFirebaseMessaging;
-      if (!FirebaseMessaging) {
-        console.error('❌ Plugin CapacitorFirebaseMessaging no instalado');
-        console.log('📋 Instálalo con: npm install @capacitor-firebase/messaging');
-        console.log('📋 Luego ejecuta: npx cap sync');
-        return;
-      }
+      // ✅ CORRECTO: Importar el plugin
+      const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
+      console.log('✅ Plugin FCM importado correctamente');
 
       // Solicitar permisos
       try {
         const permResult = await FirebaseMessaging.requestPermissions();
-        console.log('📱 Permisos:', permResult);
+        console.log('📱 Permisos FCM:', permResult);
 
         if (permResult.receive !== 'granted') {
           console.warn('⚠️ Permisos de notificaciones denegados');
@@ -117,11 +112,22 @@ export class FcmNotificationService {
         }
       } catch (permError) {
         console.warn('⚠️ Error solicitando permisos:', permError);
-        // Continuar de todos modos
       }
 
       // Configurar listeners
       await this.setupPushListeners();
+
+      // Obtener token inmediatamente
+      try {
+        const tokenResult = await FirebaseMessaging.getToken();
+        if (tokenResult?.token) {
+          console.log('📱 Token FCM obtenido:', tokenResult.token);
+          this.onPushRegistration({ value: tokenResult.token });
+        }
+      } catch (tokenError) {
+        console.error('❌ Error obteniendo token:', tokenError);
+      }
+
       console.log('✅ FCM inicializado correctamente');
 
     } catch (error) {
@@ -130,19 +136,25 @@ export class FcmNotificationService {
   }
 
   private async setupPushListeners(): Promise<void> {
-    const FirebaseMessaging = (window as any).CapacitorFirebaseMessaging;
-
     try {
+      const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
+
       // Token recibido
-      FirebaseMessaging.addListener('tokenReceived', (token: any) => {
-        console.log('📱 Token FCM recibido:', token.value);
-        this.onPushRegistration({ value: token.value });
+      await FirebaseMessaging.addListener('tokenReceived', (token: any) => {
+        console.log('📱 Token FCM recibido:', token.token);
+        this.onPushRegistration({ value: token.token });
       });
 
-      // Mensaje en foreground
-      FirebaseMessaging.addListener('messageReceived', (message: any) => {
-        console.log('📲 Mensaje recibido:', message);
-        this.onPushNotificationReceived(message);
+      // Notificación recibida (app en foreground)
+      await FirebaseMessaging.addListener('notificationReceived', (notification: any) => {
+        console.log('📲 Notificación recibida:', notification);
+        this.onPushNotificationReceived(notification);
+      });
+
+      // Notificación clickeada
+      await FirebaseMessaging.addListener('notificationActionPerformed', (action: any) => {
+        console.log('👆 Acción en notificación:', action);
+        this.onPushNotificationActionPerformed(action);
       });
 
       console.log('✅ Listeners de FCM configurados');
