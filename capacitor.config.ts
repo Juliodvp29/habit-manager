@@ -5,9 +5,6 @@ const config: CapacitorConfig = {
   appName: 'habit-manager',
   webDir: 'www',
   plugins: {
-    PushNotifications: {
-      presentationOptions: ['badge', 'sound', 'alert'],
-    },
     FirebaseMessaging: {
       presentationOptions: ['badge', 'sound', 'alert'],
       androidChannelId: 'habits_notifications',
@@ -18,11 +15,10 @@ const config: CapacitorConfig = {
     CapacitorFirebaseMessaging: {
       skipNativeInit: false,
     },
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
   },
-  server: {
-    url: 'https://caprifoliaceous-rowen-wolfishly.ngrok-free.dev',
-    cleartext: true
-  }
 };
 
 export default config;

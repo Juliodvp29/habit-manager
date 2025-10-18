@@ -195,39 +195,47 @@ export class LoginPage implements OnInit {
   /**
   * Registrar token FCM después de login
   */
-  private registerFcmToken(): void {
+
+  private async registerFcmToken(): Promise<void> {
     console.log('🔄 Iniciando registro de token FCM...');
 
-    // Verificar si estamos en plataforma nativa usando Capacitor
-    if (Capacitor.isNativePlatform()) {
-      console.log('📱 Plataforma nativa detectada, intentando obtener token FCM...');
+    if (!Capacitor.isNativePlatform()) {
+      console.log('🌐 Plataforma web detectada, saltando registro FCM');
+      return;
+    }
 
-      if ('PushNotifications' in window) {
-        (window as any).PushNotifications.getToken().then((token: any) => {
-          if (token && token.value) {
-            console.log('📱 Token FCM obtenido:', token.value);
-            this.fcmService.registerFcmToken(token.value).subscribe({
-              next: (response) => {
-                console.log('✅ Token FCM registrado exitosamente:', response);
-              },
-              error: (err) => {
-                console.error('❌ Error registrando token FCM:', err);
-              }
-            });
-          } else {
-            console.warn('⚠️ No se pudo obtener token FCM');
+    try {
+      // Usar el método correcto de Capacitor Firebase Messaging
+      const CapacitorFirebaseMessaging = (window as any).CapacitorFirebaseMessaging;
+
+      if (!CapacitorFirebaseMessaging) {
+        console.warn('⚠️ CapacitorFirebaseMessaging no disponible');
+        return;
+      }
+
+      // Esperar a obtener el token
+      const result = await CapacitorFirebaseMessaging.getToken();
+      const fcmToken = result?.token || result?.value;
+
+      if (fcmToken) {
+        console.log('📱 FCM Token obtenido:', fcmToken);
+
+        // Registrar token en el servidor
+        this.fcmService.registerFcmToken(fcmToken).subscribe({
+          next: (response) => {
+            console.log('✅ Token FCM registrado en servidor:', response);
+          },
+          error: (err) => {
+            console.error('❌ Error registrando token FCM:', err);
           }
-        }).catch((error: any) => {
-          console.error('❌ Error obteniendo token FCM:', error);
         });
       } else {
-        console.warn('⚠️ PushNotifications no disponible en window');
+        console.warn('⚠️ No se pudo obtener el token FCM');
       }
-    } else {
-      console.log('🌐 Plataforma web detectada, saltando registro FCM');
+    } catch (error) {
+      console.error('❌ Error en registerFcmToken:', error);
     }
   }
-
 
   private async showToast(message: string, color: string) {
     const toast = await this.toastController.create({

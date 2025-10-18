@@ -24,7 +24,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.initializeApp();
 
     // Inicializar FCM listeners (siempre, independiente de auth)
-    this.fcmService.loadNotifications();
 
     // Inicializar FCM cuando el usuario está autenticado
     this.setupFcmListeners();
@@ -48,13 +47,15 @@ export class AppComponent implements OnInit, OnDestroy {
    * Configurar listeners de FCM
    */
   private setupFcmListeners(): void {
-    // Escuchar cuando el usuario está autenticado
     this.authService.isAuthenticated$
       .pipe(takeUntil(this.destroy$))
       .subscribe((isAuthenticated) => {
         if (isAuthenticated) {
-          console.log('✅ Usuario autenticado, iniciando FCM...');
-          // FCM se inicializa automáticamente en el servicio
+          console.log('✅ Usuario autenticado, cargando FCM...');
+          // Esperar un poco para que todo se inicialice
+          setTimeout(() => {
+            this.fcmService.loadNotifications();
+          }, 1000);
         } else {
           console.log('🔐 Usuario no autenticado');
         }

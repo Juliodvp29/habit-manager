@@ -1,6 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import { PushNotifications } from '@capacitor/push-notifications';
 import { BehaviorSubject, catchError, Observable, Subject, tap, throwError } from 'rxjs';
 import { ApiService } from './api-service';
 export interface PushNotification {
@@ -73,64 +72,8 @@ export class FcmNotificationService {
    * Inicializar Push Notifications de Capacitor
    */
 
-  private async initializePushNotifications(): Promise<void> {
-    try {
-      console.log('📱 Inicializando Push Notifications...');
 
-      // Verificar si la plataforma soporta push notifications
-      if (!Capacitor.isNativePlatform()) {
-        console.warn('⚠️ Push notifications solo funcionan en plataformas nativas');
-        return;
-      }
 
-      // 1. Solicitar permisos primero
-      const permResult = await PushNotifications.requestPermissions();
-      console.log('📱 Resultado de permisos:', permResult);
-
-      if (permResult.receive !== 'granted') {
-        console.error('❌ Permisos de notificaciones denegados');
-        return;
-      }
-
-      // 2. Registrar con APNs / FCM
-      await PushNotifications.register();
-      console.log('✅ Push Notifications registrado');
-
-      // 3. Configurar listeners
-      await this.setupPushListeners();
-
-      console.log('✅ Push Notifications inicializado correctamente');
-    } catch (error) {
-      console.error('❌ Error inicializando Push Notifications:', error);
-    }
-  }
-
-  /**
-   * Configurar listeners de push notifications
-   */
-  private async setupPushListeners(): Promise<void> {
-    // Listener: Token registrado
-    await PushNotifications.addListener('registration', (token) => {
-      this.onPushRegistration(token);
-    });
-
-    // Listener: Error en registro
-    await PushNotifications.addListener('registrationError', (error: any) => {
-      console.error('❌ Error en registro de push:', error);
-    });
-
-    // Listener: Notificación recibida (app en foreground)
-    await PushNotifications.addListener('pushNotificationReceived', (notification) => {
-      this.onPushNotificationReceived(notification);
-    });
-
-    // Listener: Notificación clickeada (app en background)
-    await PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
-      this.onPushNotificationActionPerformed(notification);
-    });
-
-    console.log('✅ Push listeners configurados');
-  }
 
 
   /**
@@ -143,6 +86,71 @@ export class FcmNotificationService {
     // Registrar token en el servidor
     this.registerFcmToken(fcmToken);
   }
+
+
+  private async initializePushNotifications(): Promise<void> {
+    try {
+      console.log('📱 Inicializando Firebase Cloud Messaging...');
+
+      if (!Capacitor.isNativePlatform()) {
+        console.warn('⚠️ FCM solo funciona en plataformas nativas');
+        return;
+      }
+
+      // Verificar que el plugin está disponible
+      const FirebaseMessaging = (window as any).CapacitorFirebaseMessaging;
+      if (!FirebaseMessaging) {
+        console.error('❌ Plugin CapacitorFirebaseMessaging no instalado');
+        console.log('📋 Instálalo con: npm install @capacitor-firebase/messaging');
+        console.log('📋 Luego ejecuta: npx cap sync');
+        return;
+      }
+
+      // Solicitar permisos
+      try {
+        const permResult = await FirebaseMessaging.requestPermissions();
+        console.log('📱 Permisos:', permResult);
+
+        if (permResult.receive !== 'granted') {
+          console.warn('⚠️ Permisos de notificaciones denegados');
+          return;
+        }
+      } catch (permError) {
+        console.warn('⚠️ Error solicitando permisos:', permError);
+        // Continuar de todos modos
+      }
+
+      // Configurar listeners
+      await this.setupPushListeners();
+      console.log('✅ FCM inicializado correctamente');
+
+    } catch (error) {
+      console.error('❌ Error inicializando FCM:', error);
+    }
+  }
+
+  private async setupPushListeners(): Promise<void> {
+    const FirebaseMessaging = (window as any).CapacitorFirebaseMessaging;
+
+    try {
+      // Token recibido
+      FirebaseMessaging.addListener('tokenReceived', (token: any) => {
+        console.log('📱 Token FCM recibido:', token.value);
+        this.onPushRegistration({ value: token.value });
+      });
+
+      // Mensaje en foreground
+      FirebaseMessaging.addListener('messageReceived', (message: any) => {
+        console.log('📲 Mensaje recibido:', message);
+        this.onPushNotificationReceived(message);
+      });
+
+      console.log('✅ Listeners de FCM configurados');
+    } catch (error) {
+      console.error('❌ Error configurando listeners:', error);
+    }
+  }
+
 
   /**
    * Manejador: Notificación push recibida
