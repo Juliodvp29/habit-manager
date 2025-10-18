@@ -83,6 +83,7 @@ export class ProfilePage implements OnInit {
   private themeService = inject(ThemeService);
   private translationService = inject(TranslationService);
   private photoService = inject(PhotoService);
+  private fcmService = inject(FcmNotificationService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private alertController = inject(AlertController);
@@ -442,38 +443,47 @@ export class ProfilePage implements OnInit {
   }
 
   async logout() {
-    const fcmService = inject(FcmNotificationService);
-
     // ✅ NUEVO: Desregistrar token FCM antes de logout
     if ('PushNotifications' in window) {
       (window as any).PushNotifications.getToken().then((token: any) => {
-        fcmService.unregisterFcmToken(token.value).subscribe({
+        this.fcmService.unregisterFcmToken(token.value).subscribe({
           next: () => {
             console.log('✅ Token FCM desregistrado');
             // Proceder con logout
-            this.authService.logout();
-            this.router.navigate(['/auth/login']);
+            this.performLogout();
           },
           error: (err) => {
             console.error('⚠️ Error desregistrando token:', err);
             // Aún así hacer logout localmente
-            this.authService.logout();
-            this.router.navigate(['/auth/login']);
-            this.showToast(
-              this.translationService.translate('COMMON.SUCCESS'),
-              'success'
-            );
+            this.performLogout();
           }
         });
       });
     } else {
-      this.authService.logout();
-      this.router.navigate(['/auth/login']);
-      this.showToast(
-        this.translationService.translate('COMMON.SUCCESS'),
-        'success'
-      );
+      this.performLogout();
     }
+  }
+
+  private performLogout() {
+    this.authService.logout().subscribe({
+      next: () => {
+        console.log('✅ Logout completado');
+        this.router.navigate(['/auth/login']);
+        this.showToast(
+          this.translationService.translate('COMMON.SUCCESS'),
+          'success'
+        );
+      },
+      error: (err) => {
+        console.error('⚠️ Error en logout:', err);
+        // Forzar navegación incluso si hay error
+        this.router.navigate(['/auth/login']);
+        this.showToast(
+          this.translationService.translate('COMMON.ERROR'),
+          'danger'
+        );
+      }
+    });
   }
 
   async confirmDeleteAccount() {

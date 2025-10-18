@@ -1,10 +1,10 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
-import { ThemeService } from './core/services/theme-service';
-import { TranslationService } from './core/services/translation-service';
+import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from './core/services/auth-service';
 import { FcmNotificationService } from './core/services/fcm-notification-service';
-import { Subject, takeUntil } from 'rxjs';
+import { ThemeService } from './core/services/theme-service';
+import { TranslationService } from './core/services/translation-service';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +22,9 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Inicializar tema y traducción
     this.initializeApp();
+
+    // Inicializar FCM listeners (siempre, independiente de auth)
+    this.fcmService.loadNotifications();
 
     // Inicializar FCM cuando el usuario está autenticado
     this.setupFcmListeners();

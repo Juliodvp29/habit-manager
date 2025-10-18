@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 import {
   IonButton,
   IonContent,
@@ -86,6 +87,7 @@ export class LoginPage implements OnInit {
       this.router.navigate(['/tabs']);
     }
 
+    // Cargar notificaciones (solo si es necesario)
     this.fcmService.loadNotifications();
   }
 
@@ -191,24 +193,39 @@ export class LoginPage implements OnInit {
 
 
   /**
- * Registrar token FCM después de login
- */
+  * Registrar token FCM después de login
+  */
   private registerFcmToken(): void {
+    console.log('🔄 Iniciando registro de token FCM...');
 
-    // Esperar a que Capacitor proporcione el token
-    setTimeout(() => {
-      // El token ya debe estar registrado por el servicio de FCM
-      // Si es necesario registrarlo manualmente:
+    // Verificar si estamos en plataforma nativa usando Capacitor
+    if (Capacitor.isNativePlatform()) {
+      console.log('📱 Plataforma nativa detectada, intentando obtener token FCM...');
+
       if ('PushNotifications' in window) {
         (window as any).PushNotifications.getToken().then((token: any) => {
-          console.log('📱 Registrando token FCM:', token.value);
-          this.fcmService.registerFcmToken(token.value).subscribe({
-            next: () => console.log('✅ Token FCM registrado'),
-            error: (err) => console.error('❌ Error registrando token:', err)
-          });
+          if (token && token.value) {
+            console.log('📱 Token FCM obtenido:', token.value);
+            this.fcmService.registerFcmToken(token.value).subscribe({
+              next: (response) => {
+                console.log('✅ Token FCM registrado exitosamente:', response);
+              },
+              error: (err) => {
+                console.error('❌ Error registrando token FCM:', err);
+              }
+            });
+          } else {
+            console.warn('⚠️ No se pudo obtener token FCM');
+          }
+        }).catch((error: any) => {
+          console.error('❌ Error obteniendo token FCM:', error);
         });
+      } else {
+        console.warn('⚠️ PushNotifications no disponible en window');
       }
-    }, 1000);
+    } else {
+      console.log('🌐 Plataforma web detectada, saltando registro FCM');
+    }
   }
 
 

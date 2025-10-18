@@ -61,35 +61,77 @@ export class FcmNotificationService {
   public notificationUpdated$ = this.notificationUpdatedSubject.asObservable();
 
   constructor() {
-    this.initializePushNotifications();
+    // Inicializar push notifications solo si estamos en plataforma nativa
+    if (Capacitor.isNativePlatform()) {
+      this.initializePushNotifications();
+    } else {
+      console.log('📱 Plataforma web detectada, saltando inicialización de push notifications');
+    }
   }
 
   /**
    * Inicializar Push Notifications de Capacitor
    */
+
   private async initializePushNotifications(): Promise<void> {
     try {
+      console.log('📱 Inicializando Push Notifications...');
+
       // Verificar si la plataforma soporta push notifications
-      if (Capacitor.isNativePlatform()) {
-        await PushNotifications.requestPermissions();
-        await PushNotifications.addListener('registration', (token: any) => {
-          this.onPushRegistration(token);
-        });
-
-        await PushNotifications.addListener('pushNotificationReceived', (notification: any) => {
-          this.onPushNotificationReceived(notification);
-        });
-
-        await PushNotifications.addListener('pushNotificationActionPerformed', (notification: any) => {
-          this.onPushNotificationActionPerformed(notification);
-        });
-
-        console.log('✅ Push Notifications inicializado correctamente');
+      if (!Capacitor.isNativePlatform()) {
+        console.warn('⚠️ Push notifications solo funcionan en plataformas nativas');
+        return;
       }
+
+      // 1. Solicitar permisos primero
+      const permResult = await PushNotifications.requestPermissions();
+      console.log('📱 Resultado de permisos:', permResult);
+
+      if (permResult.receive !== 'granted') {
+        console.error('❌ Permisos de notificaciones denegados');
+        return;
+      }
+
+      // 2. Registrar con APNs / FCM
+      await PushNotifications.register();
+      console.log('✅ Push Notifications registrado');
+
+      // 3. Configurar listeners
+      await this.setupPushListeners();
+
+      console.log('✅ Push Notifications inicializado correctamente');
     } catch (error) {
       console.error('❌ Error inicializando Push Notifications:', error);
     }
   }
+
+  /**
+   * Configurar listeners de push notifications
+   */
+  private async setupPushListeners(): Promise<void> {
+    // Listener: Token registrado
+    await PushNotifications.addListener('registration', (token) => {
+      this.onPushRegistration(token);
+    });
+
+    // Listener: Error en registro
+    await PushNotifications.addListener('registrationError', (error: any) => {
+      console.error('❌ Error en registro de push:', error);
+    });
+
+    // Listener: Notificación recibida (app en foreground)
+    await PushNotifications.addListener('pushNotificationReceived', (notification) => {
+      this.onPushNotificationReceived(notification);
+    });
+
+    // Listener: Notificación clickeada (app en background)
+    await PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+      this.onPushNotificationActionPerformed(notification);
+    });
+
+    console.log('✅ Push listeners configurados');
+  }
+
 
   /**
    * Manejador: Registro de token FCM

@@ -8,6 +8,13 @@ const config: CapacitorConfig = {
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
     },
+    FirebaseMessaging: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+      androidChannelId: 'habits_notifications',
+      androidChannelName: 'Habit Notifications',
+      androidChannelDescription: 'Notifications for habit reminders',
+      androidChannelImportance: 4,
+    },
     CapacitorFirebaseMessaging: {
       skipNativeInit: false,
     },
