@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -22,6 +22,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  ModalController,
   ToastController
 } from '@ionic/angular/standalone';
 import { TranslateModule } from '@ngx-translate/core';
@@ -48,6 +49,7 @@ import {
 } from 'ionicons/icons';
 import { Subject, takeUntil } from 'rxjs';
 import { FcmNotificationService, Notification } from 'src/app/core/services/fcm-notification-service';
+import { NotificationDetailModal } from './modal/notification-detail.modal';
 
 type NotificationType = 'all' | 'unread' | 'read';
 
@@ -55,6 +57,7 @@ type NotificationType = 'all' | 'unread' | 'read';
   selector: 'app-notifications',
   templateUrl: './notifications.page.html',
   styleUrls: ['./notifications.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     CommonModule,
@@ -85,6 +88,7 @@ export class NotificationsPage implements OnInit, OnDestroy {
   private fcmService = inject(FcmNotificationService);
   private toastController = inject(ToastController);
   private alertController = inject(AlertController);
+  private modalController = inject(ModalController);
   private router = inject(Router);
   private destroy$ = new Subject<void>();
 
@@ -290,13 +294,19 @@ export class NotificationsPage implements OnInit, OnDestroy {
   /**
    * Ver detalle de notificación
    */
-  viewNotification(notification: Notification): void {
+  async viewNotification(notification: Notification): Promise<void> {
     if (!notification.isRead) {
       this.markAsRead(notification);
     }
 
-    // Navegar a detalle si es necesario
-    console.log('Ver notificación:', notification);
+    const modal = await this.modalController.create({
+      component: NotificationDetailModal,
+      componentProps: {
+        notification: notification
+      }
+    });
+
+    await modal.present();
   }
 
   /**

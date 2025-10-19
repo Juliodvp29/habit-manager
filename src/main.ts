@@ -10,6 +10,7 @@ import { routes } from './app/app.routes';
 import { authInterceptor } from './app/core/interceptors/auth.interceptor';
 import { refreshTokenInterceptor } from './app/core/interceptors/refresh-token.interceptor';
 import { environment } from './environments/environment';
+import { cacheInterceptor } from './app/core/interceptors/cache.interceptor';
 
 export function createTranslateLoader(http: HttpClient) {
   return {
@@ -29,6 +30,7 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes),
     provideHttpClient(
       withInterceptors([
+        cacheInterceptor,
         authInterceptor,           // ← Agregar Authorization header
         refreshTokenInterceptor,   // ← Manejar 401 y renovar token (DEBE IR DESPUÉS)
       ]),

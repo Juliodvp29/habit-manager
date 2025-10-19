@@ -104,6 +104,40 @@ export class PhotoService {
     }
   }
 
+
+  async compressImage(base64: string, maxWidth = 500, quality = 0.8): Promise<string> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        // Calcular nuevo tamaño manteniendo aspect ratio
+        if (width > height && width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        } else if (height > maxWidth) {
+          width *= maxWidth / height;
+          height = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convertir a base64 con compresión
+        const compressed = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressed.split(',')[1]); // Remover data:image/jpeg;base64,
+      };
+
+      img.src = `data:image/jpeg;base64,${base64}`;
+    });
+  }
+
+
   /**
    * Subir foto a Firebase Storage
    * @param base64Image - Imagen en formato base64
@@ -112,8 +146,10 @@ export class PhotoService {
    */
   async uploadProfilePhoto(base64Image: string, userId: number): Promise<string> {
     try {
+      //Comprimir imagen antes de subir
+      const compressed = await this.compressImage(base64Image);
       // Convertir base64 a Blob
-      const blob = this.base64ToBlob(base64Image, 'image/jpeg');
+      const blob = this.base64ToBlob(compressed, 'image/jpeg');
 
       // Crear referencia única en Firebase Storage
       const fileName = `profile-photos/${userId}/${Date.now()}.jpg`;

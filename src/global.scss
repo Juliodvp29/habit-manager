@@ -25,3 +25,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.habit-card {
+  will-change: transform, opacity;
+
+  &:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+// Remover will-change después de la animación
+.habit-card.animating {
+  will-change: transform;
+}
+
+.habit-card:not(.animating) {
+  will-change: auto;
+}

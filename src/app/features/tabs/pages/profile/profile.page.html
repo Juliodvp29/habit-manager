@@ -18,9 +18,9 @@
     <!-- Profile Header Card -->
     <div class="bg-gradient-to-br from-primary-500 to-secondary-500 px-6 pt-8 pb-20">
       <div class="flex flex-col items-center">
-        <!-- Profile Picture -->
+        <!-- Profile Picture - CORREGIDO -->
         <div class="relative mb-4">
-          <ion-avatar class="w-24 h-24 border-4 border-white dark:border-neutral-900 shadow-lg">
+          <ion-avatar class="w-24 h-24 border-4 border-white dark:border-neutral-900 shadow-lg overflow-hidden">
             @if (isUploadingPhoto()) {
             <!-- Spinner mientras se sube la foto -->
             <div class="w-full h-full rounded-full bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center">
@@ -28,8 +28,11 @@
             </div>
             } @else {
             @if (user()?.profilePicture) {
-            <img [src]="user()?.profilePicture" [alt]="user()?.fullName" />
+            <!-- CORRECCIÓN: Agregar clases de object-fit -->
+            <img appLazyImage [src]="user()?.profilePicture" [alt]="user()?.fullName"
+              class="w-full h-full object-cover" />
             } @else {
+            <!-- Iniciales si no hay foto -->
             <div class="w-full h-full rounded-full bg-white dark:bg-neutral-800 flex items-center justify-center">
               <span class="text-3xl font-bold text-primary-600 dark:text-primary-400">
                 {{ getUserInitials() }}
@@ -41,10 +44,9 @@
 
           <!-- Botón para cambiar foto -->
           <button (click)="selectProfilePicture()" [disabled]="isUploadingPhoto()"
-            class="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-neutral-800 rounded-full flex items-center justify-center shadow-md border-2 border-primary-500 disabled:opacity-50">
+            class="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-neutral-800 rounded-full flex items-center justify-center shadow-md border-2 border-primary-500 disabled:opacity-50 transition-opacity">
             <ion-icon [name]="isUploadingPhoto() ? 'hourglass-outline' : 'camera-outline'"
-              class="text-primary-600 dark:text-primary-400">
-            </ion-icon>
+              class="text-primary-600 dark:text-primary-400"></ion-icon>
           </button>
         </div>
 
@@ -64,7 +66,6 @@
         }
       </div>
     </div>
-
     <div class="px-4 -mt-12 pb-6">
 
       <!-- Personal Information Card -->

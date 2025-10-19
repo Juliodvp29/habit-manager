@@ -1,0 +1,45 @@
+// Estilos específicos para el avatar
+ion-avatar {
+  // Asegurar que el avatar sea circular
+  border-radius: 50%;
+  overflow: hidden;
+
+  img {
+    // Asegurar que la imagen cubra todo el espacio sin deformarse
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+}
+
+// Transiciones suaves para el botón de cámara
+button {
+  transition: all 0.3s ease;
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+// Animación para el spinner de carga
+ion-spinner {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}

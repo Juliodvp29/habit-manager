@@ -109,7 +109,7 @@
   <div class="space-y-2 px-2 py-4">
     @for (notification of filteredNotifications(); track notification.id) {
     <ion-item-sliding [attr.data-id]="notification.id">
-      <ion-item (click)="viewNotification(notification)"
+      <ion-item (dblclick)="viewNotification(notification)"
         class="bg-white dark:bg-neutral-900 rounded-2xl mb-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
         [class.border-l-4]="!notification.isRead" [class.border-l-primary-500]="!notification.isRead" button>
 

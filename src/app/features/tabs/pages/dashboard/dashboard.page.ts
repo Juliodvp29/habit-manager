@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IonButton,
@@ -33,6 +33,7 @@ import { TranslationService } from 'src/app/core/services/translation-service';
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [CommonModule,
     IonHeader,
@@ -45,7 +46,7 @@ import { TranslationService } from 'src/app/core/services/translation-service';
     IonFabButton,
     TranslateModule]
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, OnDestroy {
 
   private habitService = inject(HabitService);
   private authService = inject(AuthService);
@@ -58,6 +59,10 @@ export class DashboardPage implements OnInit {
   isLoading = signal(false);
   isRefreshing = signal(false);
   processingHabitId = signal<number | null>(null);
+
+  // NUEVO: Cache key para persistencia local
+  private readonly CACHE_KEY = 'dashboard_cache';
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
   // Computed values
   completedHabits = computed(() =>
@@ -78,7 +83,54 @@ export class DashboardPage implements OnInit {
   }
 
   ngOnInit() {
+    // NUEVO: Cargar desde cache primero
+    this.loadFromCache();
+    // Luego actualizar desde servidor
     this.loadDashboard();
+  }
+
+  ngOnDestroy() {
+    // Guardar en cache al salir
+    this.saveToCache();
+  }
+
+  /**
+   * NUEVO: Cargar datos desde cache local
+   */
+  private loadFromCache(): void {
+    try {
+      const cached = localStorage.getItem(this.CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        const now = Date.now();
+
+        // Si el cache es reciente (menos de 5 minutos), usarlo
+        if (now - timestamp < this.CACHE_DURATION) {
+          console.log('📦 Cargando desde cache local');
+          this.habits.set(data);
+        } else {
+          console.log('⏰ Cache expirado, cargando desde servidor');
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error cargando cache:', error);
+    }
+  }
+
+  /**
+   * NUEVO: Guardar datos en cache local
+   */
+  private saveToCache(): void {
+    try {
+      const cache = {
+        data: this.habits(),
+        timestamp: Date.now()
+      };
+      localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
+      console.log('💾 Dashboard guardado en cache');
+    } catch (error) {
+      console.error('❌ Error guardando cache:', error);
+    }
   }
 
   loadDashboard() {
@@ -87,6 +139,8 @@ export class DashboardPage implements OnInit {
       next: (data) => {
         this.habits.set(data);
         this.isLoading.set(false);
+        // NUEVO: Guardar en cache después de cargar
+        this.saveToCache();
       },
       error: (error) => {
         this.isLoading.set(false);
@@ -102,6 +156,8 @@ export class DashboardPage implements OnInit {
       next: (data) => {
         this.habits.set(data);
         this.isRefreshing.set(false);
+        // NUEVO: Actualizar cache
+        this.saveToCache();
         this.showToast('Dashboard actualizado', 'success');
       },
       error: (error) => {
@@ -166,15 +222,33 @@ export class DashboardPage implements OnInit {
       notes: ''
     }).subscribe({
       next: () => {
-        // Actualizar estado local
+        // NUEVO: Actualizar estado local INMEDIATAMENTE
         this.habits.update(habits =>
           habits.map(h => h.id === habit.id
-            ? { ...h, todayCompleted: true, todayProgress: h.todayProgress + 1 }
+            ? {
+              ...h,
+              todayCompleted: true,
+              todayProgress: h.todayProgress + 1,
+              currentStreak: (h.currentStreak || 0) + 1 // Incrementar racha
+            }
             : h
           )
         );
+
         this.processingHabitId.set(null);
+
+        // NUEVO: Guardar inmediatamente en cache
+        this.saveToCache();
+
         this.showToast('¡Hábito completado! 🎉', 'success');
+
+        // NUEVO: Recargar en background para sincronizar con servidor
+        this.habitService.getDashboard().subscribe({
+          next: (data) => {
+            this.habits.set(data);
+            this.saveToCache();
+          }
+        });
       },
       error: (error) => {
         this.processingHabitId.set(null);
