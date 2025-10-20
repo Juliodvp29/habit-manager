@@ -9,17 +9,48 @@
           {{ getCurrentDate() }}
         </p>
       </div>
-      <button (click)="refreshDashboard()"
-        class="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-        <ion-icon name="refresh-outline" class="text-2xl text-neutral-700 dark:text-neutral-300"
-          [class.animate-spin]="isRefreshing()"></ion-icon>
-      </button>
+      <div class="flex items-center gap-2">
+        <!-- NUEVO: Indicador de estado de conexión -->
+        @if (hasConnectionError()) {
+        <div class="flex items-center gap-1 text-warning-600 dark:text-warning-400">
+          <ion-icon name="cloud-offline-outline" class="text-xl"></ion-icon>
+          <span class="text-xs">Sin conexión</span>
+        </div>
+        }
+
+        <button (click)="refreshDashboard()"
+          class="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+          <ion-icon name="refresh-outline" class="text-2xl text-neutral-700 dark:text-neutral-300"
+            [class.animate-spin]="isRefreshing()"></ion-icon>
+        </button>
+      </div>
     </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="bg-neutral-50 dark:bg-neutral-950">
   <div class="px-4 py-6 max-w-4xl mx-auto">
+
+    <!-- NUEVO: Banner de advertencia si hay error de conexión -->
+    @if (hasConnectionError()) {
+    <div
+      class="bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700 rounded-xl p-4 mb-4">
+      <div class="flex items-start gap-3">
+        <ion-icon name="cloud-offline-outline"
+          class="text-2xl text-warning-600 dark:text-warning-400 flex-shrink-0"></ion-icon>
+        <div class="flex-1">
+          <h3 class="font-semibold text-warning-900 dark:text-warning-100 mb-1">Modo sin conexión</h3>
+          <p class="text-sm text-warning-700 dark:text-warning-300 mb-2">
+            No se pudo conectar al servidor. Mostrando datos guardados localmente.
+          </p>
+          <button (click)="refreshDashboard()"
+            class="text-sm font-medium text-warning-700 dark:text-warning-400 hover:underline">
+            Reintentar conexión
+          </button>
+        </div>
+      </div>
+    </div>
+    }
 
     <!-- Loading state -->
     @if (isLoading()) {
@@ -32,7 +63,6 @@
     @else {
     <!-- Summary Cards -->
     <div class="grid grid-cols-2 gap-3 mb-6">
-      <!-- Total hábitos -->
       <div class="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-4 shadow-lg shadow-primary-500/20">
         <div class="flex items-center gap-2 mb-2">
           <ion-icon name="checkmark-circle" class="text-2xl text-white/90"></ion-icon>
@@ -41,7 +71,6 @@
         <p class="text-3xl font-bold text-white">{{ habits().length }}</p>
       </div>
 
-      <!-- Completados hoy -->
       <div
         class="bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl p-4 shadow-lg shadow-secondary-500/20">
         <div class="flex items-center gap-2 mb-2">
@@ -75,7 +104,6 @@
       </h2>
 
       @if (habits().length === 0) {
-      <!-- Empty state -->
       <div class="bg-white dark:bg-neutral-900 rounded-2xl p-8 text-center shadow-sm">
         <div
           class="w-20 h-20 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -93,13 +121,11 @@
         </ion-button>
       </div>
       } @else {
-      <!-- Habits list -->
       <div class="space-y-3">
         @for (habit of habits(); track habit.id) {
         <div class="bg-white dark:bg-neutral-900 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow"
           (click)="viewHabitDetails(habit.id)">
           <div class="flex items-start gap-3">
-            <!-- Checkbox -->
             <button (click)="toggleHabitCompletion($event, habit)" class="flex-shrink-0 mt-1"
               [disabled]="habit.id === processingHabitId()">
               @if (habit.id === processingHabitId()) {
@@ -115,7 +141,6 @@
               }
             </button>
 
-            <!-- Content -->
             <div class="flex-1 min-w-0">
               <h3 class="font-semibold text-neutral-900 dark:text-neutral-50 mb-1"
                 [class.line-through]="habit.todayCompleted" [class.text-neutral-400]="habit.todayCompleted">
@@ -140,7 +165,6 @@
               </div>
             </div>
 
-            <!-- Progress indicator -->
             <div class="flex-shrink-0">
               <div class="w-12 h-12 rounded-full flex items-center justify-center" [class]="habit.todayCompleted 
                         ? 'bg-primary-100 dark:bg-primary-900/30' 
@@ -161,7 +185,6 @@
     }
   </div>
 
-  <!-- FAB para crear hábito -->
   <ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mb-16 mr-4">
     <ion-fab-button (click)="navigateToCreateHabit()" color="primary">
       <ion-icon name="add"></ion-icon>

@@ -20,15 +20,15 @@
   @if (hasNotifications()) {
   <ion-toolbar class="px-4 bg-neutral-50 dark:bg-neutral-800">
     <ion-segment [value]="filterType()" (ionChange)="onFilterChange($event)" class="w-full">
-      <ion-segment-button value="all">
-        <ion-label>Todas</ion-label>
-        <ion-badge class="ml-2">{{ notifications().length }}</ion-badge>
-      </ion-segment-button>
       <ion-segment-button value="unread">
         <ion-label>Sin leer</ion-label>
         @if (unreadCount() > 0) {
         <ion-badge class="ml-2">{{ unreadCount() }}</ion-badge>
         }
+      </ion-segment-button>
+      <ion-segment-button value="all">
+        <ion-label>Todas</ion-label>
+        <ion-badge class="ml-2">{{ notifications().length }}</ion-badge>
       </ion-segment-button>
       <ion-segment-button value="read">
         <ion-label>Leídas</ion-label>
@@ -108,8 +108,8 @@
   @else {
   <div class="space-y-2 px-2 py-4">
     @for (notification of filteredNotifications(); track notification.id) {
-    <ion-item-sliding [attr.data-id]="notification.id">
-      <ion-item (dblclick)="viewNotification(notification)"
+    <ion-item-sliding #slidingItem [attr.data-id]="notification.id">
+      <ion-item (click)="viewNotification(notification)"
         class="bg-white dark:bg-neutral-900 rounded-2xl mb-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
         [class.border-l-4]="!notification.isRead" [class.border-l-primary-500]="!notification.isRead" button>
 
@@ -191,15 +191,25 @@
         </div>
       </ion-item>
 
-      <!-- Sliding options -->
+      <!-- Sliding options - MODIFICADO: Usar hideNotification -->
       <ion-item-options side="end">
         @if (!notification.isRead) {
-        <ion-item-option (click)="markAsRead(notification)" color="primary">
+        <ion-item-option (click)="markAsRead(notification, slidingItem)" color="primary">
+          @if (processingNotificationId() === notification.id) {
+          <ion-spinner slot="icon-only" name="crescent"></ion-spinner>
+          } @else {
           <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
+          }
         </ion-item-option>
         }
-        <ion-item-option (click)="deleteNotification(notification)" color="danger">
-          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+
+        <!-- CAMBIADO: Icono de ojo cerrado y color neutral -->
+        <ion-item-option (click)="hideNotification(notification, slidingItem)" color="medium">
+          @if (processingNotificationId() === notification.id) {
+          <ion-spinner slot="icon-only" name="crescent"></ion-spinner>
+          } @else {
+          <ion-icon slot="icon-only" name="eye-off-outline"></ion-icon>
+          }
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>

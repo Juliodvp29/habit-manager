@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -35,6 +35,7 @@ import {
   chevronBackOutline,
   chevronForwardOutline,
   closeOutline,
+  eyeOffOutline,
   filterOutline,
   flameOutline,
   heartOutline,
@@ -92,11 +93,12 @@ export class NotificationsPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private destroy$ = new Subject<void>();
 
-  // Signals
-  filterType = signal<NotificationType>('all');
-  isRefreshing = signal(false);
-  isDeleting = signal<number | null>(null);
+  @ViewChildren(IonItemSliding) slidingItems!: QueryList<IonItemSliding>;
 
+  // Signals
+  filterType = signal<NotificationType>('unread'); // CAMBIADO: Por defecto mostrar solo no leídas
+  isRefreshing = signal(false);
+  processingNotificationId = signal<number | null>(null); // CAMBIADO: Renombrado
   // Computed
   notifications = this.fcmService.notifications;
   unreadCount = this.fcmService.unreadCount;
@@ -120,7 +122,7 @@ export class NotificationsPage implements OnInit, OnDestroy {
   hasFilteredNotifications = computed(() => this.filteredNotifications().length > 0);
 
   constructor() {
-    addIcons({ chevronBackOutline, checkmarkDoneOutline, notificationsOutline, refreshOutline, filterOutline, flameOutline, checkmarkCircleOutline, timeOutline, heartOutline, shieldOutline, warningOutline, chevronForwardOutline, checkmarkOutline, trashOutline, closeOutline, informationCircleOutline, checkmarkDone, settingsOutline });
+    addIcons({ chevronBackOutline, checkmarkDoneOutline, notificationsOutline, refreshOutline, filterOutline, flameOutline, checkmarkCircleOutline, timeOutline, heartOutline, shieldOutline, warningOutline, chevronForwardOutline, checkmarkOutline, eyeOffOutline, trashOutline, closeOutline, informationCircleOutline, checkmarkDone, settingsOutline });
   }
 
   ngOnInit(): void {
@@ -196,7 +198,8 @@ export class NotificationsPage implements OnInit, OnDestroy {
   /**
    * Marcar notificación como leída
    */
-  markAsRead(notification: Notification, event?: Event): void {
+
+  markAsRead(notification: Notification, slidingItem?: IonItemSliding, event?: Event): void {
     if (event) {
       event.stopPropagation();
     }
@@ -205,14 +208,24 @@ export class NotificationsPage implements OnInit, OnDestroy {
       return;
     }
 
+    this.processingNotificationId.set(notification.id);
+
     this.fcmService.markAsRead(notification.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.showToast('Notificación marcada como leída', 'success');
+          this.processingNotificationId.set(null);
+
+          // Cerrar el sliding
+          if (slidingItem) {
+            slidingItem.close();
+          }
+          this.closeAllSlidingItems();
         },
         error: () => {
           this.showToast('Error marcando como leída', 'danger');
+          this.processingNotificationId.set(null);
         }
       });
   }
@@ -257,38 +270,53 @@ export class NotificationsPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  /**
-   * Eliminar notificación (local - solo UI)
-   */
-  async deleteNotification(notification: Notification, event?: Event): Promise<void> {
+  // NUEVO: "Eliminar" = Marcar como leída y ocultar
+
+  async hideNotification(notification: Notification, slidingItem?: IonItemSliding, event?: Event): Promise<void> {
     if (event) {
       event.stopPropagation();
     }
 
-    const alert = await this.alertController.create({
-      header: 'Eliminar notificación',
-      message: '¿Estás seguro que deseas eliminar esta notificación?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel'
-        },
-        {
-          text: 'Eliminar',
-          role: 'destructive',
-          handler: () => {
-            this.isDeleting.set(notification.id);
-            // Simular eliminación con delay
-            setTimeout(() => {
-              this.showToast('Notificación eliminada', 'success');
-              this.isDeleting.set(null);
-            }, 500);
-          }
-        }
-      ]
-    });
+    // Si ya está leída, solo cerrar el sliding
+    if (notification.isRead) {
+      if (slidingItem) {
+        slidingItem.close();
+      }
+      this.showToast('Notificación ya estaba marcada como leída', 'warning');
+      return;
+    }
 
-    await alert.present();
+    this.processingNotificationId.set(notification.id);
+
+    // Marcar como leída (esto la ocultará del filtro "unread" por defecto)
+    this.fcmService.markAsRead(notification.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.showToast('Notificación ocultada', 'success');
+          this.processingNotificationId.set(null);
+
+          // Cerrar el sliding
+          if (slidingItem) {
+            slidingItem.close();
+          }
+          this.closeAllSlidingItems();
+        },
+        error: () => {
+          this.showToast('Error al ocultar notificación', 'danger');
+          this.processingNotificationId.set(null);
+        }
+      });
+  }
+
+
+  // NUEVO: Método para cerrar todos los sliding items
+  private closeAllSlidingItems(): void {
+    if (this.slidingItems) {
+      this.slidingItems.forEach(item => {
+        item.close();
+      });
+    }
   }
 
   /**
