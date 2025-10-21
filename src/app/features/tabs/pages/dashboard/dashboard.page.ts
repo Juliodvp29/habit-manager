@@ -63,10 +63,12 @@ export class DashboardPage implements OnInit, OnDestroy {
   isLoading = signal(false);
   isRefreshing = signal(false);
   processingHabitId = signal<number | null>(null);
-  hasConnectionError = signal(false); // NUEVO: Estado de conexión
+  hasConnectionError = signal(false);
 
+  // NUEVO: Claves para cache
   private readonly CACHE_KEY = 'dashboard_cache';
-  private readonly CACHE_DURATION = 5 * 60 * 1000;
+  private readonly CACHE_TIMESTAMP_KEY = 'dashboard_cache_timestamp';
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
   completedHabits = computed(() =>
     this.habits().filter(h => h.todayCompleted).length
@@ -82,33 +84,73 @@ export class DashboardPage implements OnInit, OnDestroy {
       checkmark,
       repeatOutline,
       add,
-      cloudOfflineOutline // NUEVO: Icono para modo offline
+      cloudOfflineOutline
     });
   }
 
   ngOnInit() {
+    // Primero intentar cargar desde cache
+    this.loadFromCache();
+
+    // Luego hacer request al servidor
     this.loadDashboard();
   }
 
   ngOnDestroy() {
-    // No guardar cache al salir para evitar datos obsoletos
+    // Guardar en cache al salir
+    this.saveToCache();
   }
 
+  /**
+   * NUEVO: Cargar datos desde cache si están frescos
+   */
   private loadFromCache(): void {
-    // Deshabilitar carga desde cache para evitar datos obsoletos
-    console.log('📦 Cache deshabilitado para evitar datos obsoletos');
+    try {
+      const cachedData = localStorage.getItem(this.CACHE_KEY);
+      const cacheTimestamp = localStorage.getItem(this.CACHE_TIMESTAMP_KEY);
+
+      if (cachedData && cacheTimestamp) {
+        const timestamp = parseInt(cacheTimestamp, 10);
+        const now = Date.now();
+        const isFresh = (now - timestamp) < this.CACHE_DURATION;
+
+        if (isFresh) {
+          const habits = JSON.parse(cachedData) as HabitDashboard[];
+          console.log('📦 Cargando desde cache:', habits.length, 'hábitos');
+          this.habits.set(habits);
+        } else {
+          console.log('📦 Cache expirado, limpiando...');
+          this.clearCache();
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error cargando cache:', error);
+      this.clearCache();
+    }
   }
 
+  /**
+   * NUEVO: Guardar datos en cache
+   */
   private saveToCache(): void {
     try {
-      const cache = {
-        data: this.habits(),
-        timestamp: Date.now()
-      };
-      localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
+      const data = this.habits();
+      if (data.length > 0) {
+        localStorage.setItem(this.CACHE_KEY, JSON.stringify(data));
+        localStorage.setItem(this.CACHE_TIMESTAMP_KEY, Date.now().toString());
+        console.log('💾 Guardado en cache:', data.length, 'hábitos');
+      }
     } catch (error) {
       console.error('❌ Error guardando cache:', error);
     }
+  }
+
+  /**
+   * NUEVO: Limpiar cache
+   */
+  private clearCache(): void {
+    localStorage.removeItem(this.CACHE_KEY);
+    localStorage.removeItem(this.CACHE_TIMESTAMP_KEY);
   }
 
   loadDashboard() {
@@ -116,18 +158,27 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.hasConnectionError.set(false);
 
     this.habitService.getDashboard().pipe(
-      timeout(10000), // Timeout de 10 segundos
+      timeout(10000),
       catchError((error) => {
         console.error('❌ Error loading dashboard:', error);
         this.hasConnectionError.set(true);
-        this.showConnectionError();
+
+        // Si hay datos en cache, usar esos
+        const cachedData = this.habits();
+        if (cachedData.length > 0) {
+          this.showToast('Usando datos guardados. Sin conexión al servidor.', 'warning');
+        } else {
+          this.showConnectionError();
+        }
+
         return of([]);
       })
     ).subscribe({
       next: (data) => {
-        if (data.length > 0 || !this.hasConnectionError()) {
+        if (data.length > 0) {
           this.habits.set(data);
-          // No guardar cache para evitar datos obsoletos
+          // Guardar en cache inmediatamente
+          this.saveToCache();
           this.hasConnectionError.set(false);
         }
         this.isLoading.set(false);
@@ -172,9 +223,10 @@ export class DashboardPage implements OnInit, OnDestroy {
       })
     ).subscribe({
       next: (data) => {
-        if (data.length > 0 || !this.hasConnectionError()) {
+        if (data.length > 0) {
           this.habits.set(data);
-          // No guardar cache para evitar datos obsoletos
+          // Guardar en cache después de refresh
+          this.saveToCache();
           this.showToast('Dashboard actualizado', 'success');
         }
         this.isRefreshing.set(false);
@@ -224,8 +276,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     return labels[frequency] || frequency;
   }
 
-
-
   toggleHabitCompletion(event: Event, habit: HabitDashboard) {
     event.stopPropagation();
 
@@ -253,8 +303,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
         console.log('✅ Progreso registrado:', response);
 
-        // IMPORTANTE: Usar ChangeDetectorRef para forzar detección de cambios
-        // Actualizar estado local INMEDIATAMENTE y de forma inmutable
+        // Actualizar estado local INMEDIATAMENTE de forma inmutable
         const updatedHabits = this.habits().map(h => {
           if (h.id === habit.id) {
             return {
@@ -269,7 +318,10 @@ export class DashboardPage implements OnInit, OnDestroy {
 
         this.habits.set(updatedHabits);
         this.processingHabitId.set(null);
-        // No guardar cache después de completar un hábito para evitar conflictos
+
+        // ⭐ CRÍTICO: Guardar en cache INMEDIATAMENTE después de completar
+        this.saveToCache();
+
         this.showToast('¡Hábito completado! 🎉', 'success');
       }
     });
